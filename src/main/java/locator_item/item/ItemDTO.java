@@ -1,6 +1,5 @@
 package locator_item.item;
 
-import locator_item.room.Room;
 import lombok.Data;
 
 @Data

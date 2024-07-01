@@ -1,7 +1,9 @@
 package locator_item.item;
 
 import locator_item.room.RoomService;
+
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,5 +41,4 @@ public class ItemService {
     public void delete(Long id) {
         itemRepository.deleteById(id);
     }
-
 }

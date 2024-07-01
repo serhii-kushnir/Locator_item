@@ -4,16 +4,11 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
-#
-##  flyway:
-##    url: ${DB_URL}
-##    user: ${DB_USERNAME}
-##    password: ${DB_PASSWORD}
-#
+
   jpa:
-    database: POSTGRESQL
+#    database: POSTGRESQL
     show-sql: true
-#    open-in-view: false
+    open-in-view: false
     hibernate:
       ddl-auto: update
     properties:
@@ -25,7 +20,7 @@ spring:
 server:
   port: 9998
 
-#springdoc:
-#  swagger-ui:
-#    disable-swagger-default-url: true
-#    path: /swagger-ui.html
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    path: /swagger-ui.html
