@@ -1,13 +1,15 @@
-package locator_item.item;
+package locator_item.v1.item;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 
-import locator_item.room.Room;
+import locator_item.v1.Box.Box;
+import locator_item.v1.room.Room;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,16 +25,24 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
+    @Column(name = "description", columnDefinition = "TXT")
     private String description;
 
+    @Column(name = "quantity")
     private Short quantity;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
+    @JoinColumn(name = "box_id")
+    private Box box;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 }
 

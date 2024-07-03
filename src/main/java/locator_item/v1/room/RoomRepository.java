@@ -1,4 +1,4 @@
-package locator_item.room;
+package locator_item.v1.room;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

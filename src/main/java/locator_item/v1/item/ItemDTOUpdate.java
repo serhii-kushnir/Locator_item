@@ -1,9 +1,9 @@
-package locator_item.item;
+package locator_item.v1.item;
 
 import lombok.Data;
 
 @Data
-public class ItemDTO {
+public class ItemDTOUpdate {
 
     private String name;
 
@@ -11,5 +11,8 @@ public class ItemDTO {
 
     private Short quantity;
 
+    private Long boxId;
+
     private Long roomId;
+
 }
