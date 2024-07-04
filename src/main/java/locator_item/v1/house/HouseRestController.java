@@ -27,7 +27,7 @@ public class HouseRestController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<House> getById(@PathVariable Long id) {
+    public ResponseEntity<HouseDTO> getById(@PathVariable Long id) {
         return houseService.getById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
