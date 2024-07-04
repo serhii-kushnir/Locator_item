@@ -3,7 +3,9 @@ package locator_item.v1.item;
 import lombok.Data;
 
 @Data
-public class ItemDTOUpdate {
+public class ItemDTO {
+
+    private Long Id;
 
     private String name;
 
@@ -14,5 +16,4 @@ public class ItemDTOUpdate {
     private Long boxId;
 
     private Long roomId;
-
 }

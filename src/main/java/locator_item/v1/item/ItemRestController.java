@@ -2,9 +2,6 @@ package locator_item.v1.item;
 
 import lombok.AllArgsConstructor;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,26 +18,29 @@ import java.util.List;
 @AllArgsConstructor
 public class ItemRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ItemRestController.class);
     private ItemService itemService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Item>> getAll() {
-        return mappingResponseListItems(itemService.getAll());
+    @PostMapping("/create")
+    public ResponseEntity<Item> create(@RequestBody ItemDTO itemDTO) {
+        return mappingResponseItem(itemService.create(itemDTO));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Item> create(@RequestBody ItemDTOCreate itemDTOCreate) {
-        return mappingResponseItem(itemService.create(itemDTOCreate));
+    @GetMapping("/{id}")
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
+        ItemDTO itemDTO = itemService.getById(id);
+        return ResponseEntity.ok(itemDTO);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ItemDTO>> getAllItems() {
+        List<ItemDTO> items = itemService.getAll();
+        return ResponseEntity.ok(items);
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<Item> updateById(@PathVariable long id, @RequestBody ItemDTOUpdate itemDTOUpdate) {
-        logger.info("Updating item with id: " +  id);
-        logger.info("Update data: " +  itemDTOUpdate);
-
-        Item itemUdade = itemService.updateById(id, itemDTOUpdate);
-        return new ResponseEntity<>(itemUdade, HttpStatus.OK);
+    public ResponseEntity<Item> updateById(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
+        Item itemUpdate = itemService.updateById(id, itemDTO);
+        return new ResponseEntity<>(itemUpdate, HttpStatus.OK);
     }
 
     @PostMapping("delete/{id}")

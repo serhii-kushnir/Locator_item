@@ -14,10 +14,10 @@ public class BoxService {
     private final BoxRepository boxRepository;
     private final RoomService roomService;
 
-    public Box create(BoxDTOCreate boxDTOCreate) {
+    public Box create(BoxDTO boxDTO) {
         Box box = Box.builder()
-                .name(boxDTOCreate.getName())
-                .room(roomService.getById(boxDTOCreate.getRoomId()))
+                .name(boxDTO.getName())
+                .room(roomService.getById(boxDTO.getRoomId()))
                 .build();
 
         return boxRepository.save(box);

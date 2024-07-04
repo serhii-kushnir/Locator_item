@@ -24,14 +24,14 @@ import lombok.NoArgsConstructor;
 public class Item {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "description", columnDefinition = "TXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "quantity")

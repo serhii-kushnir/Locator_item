@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,13 +20,20 @@ public class ItemService {
     private final RoomService roomService;
     private final BoxService boxService;
 
-    public Item create(ItemDTOCreate itemDTOCreate) {
+    public ItemDTO getById(Long id) {
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Item not found - " + id));
+        return convertToDTO(item);
+    }
+
+    public Item create(ItemDTO itemDTO) {
         Item item = Item.builder()
-                .name(itemDTOCreate.getName())
-                .description(itemDTOCreate.getDescription())
-                .quantity(itemDTOCreate.getQuantity())
-                .room(roomService.getById(itemDTOCreate.getRoomId()))
-                .box(boxService.getById(itemDTOCreate.getBoxId()))
+                .id(itemDTO.getId())
+                .name(itemDTO.getName())
+                .description(itemDTO.getDescription())
+                .quantity(itemDTO.getQuantity())
+                .room(roomService.getById(itemDTO.getRoomId()))
+                .box(boxService.getById(itemDTO.getBoxId()))
                 .build();
 
         return itemRepository.save(item);
@@ -39,24 +47,28 @@ public class ItemService {
         return itemRepository.findByRoomId(id);
     }
 
-    public List<Item> getAll() {
-        return itemRepository.findAll();
+    public List<ItemDTO> getAll() {
+        List<Item> items = itemRepository.findAll();
+        return items.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Item updateById(Long id, ItemDTOUpdate dto) {
+    public Item updateById(Long id, ItemDTO itemDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Item not found - " + id));
-        item.setName(dto.getName());
-        item.setDescription(dto.getDescription());
-        item.setQuantity(dto.getQuantity());
+        item.setId(itemDTO.getId());
+        item.setName(itemDTO.getName());
+        item.setDescription(itemDTO.getDescription());
+        item.setQuantity(itemDTO.getQuantity());
 
-        if (dto.getBoxId() != null) {
-            Box box = boxService.getById(dto.getBoxId());
+        if (itemDTO.getBoxId() != null) {
+            Box box = boxService.getById(itemDTO.getBoxId());
             item.setBox(box);
         }
 
-        if (dto.getRoomId() != null) {
-            Room room = roomService.getById(dto.getRoomId());
+        if (itemDTO.getRoomId() != null) {
+            Room room = roomService.getById(itemDTO.getRoomId());
             item.setRoom(room);
         }
 
@@ -65,5 +77,17 @@ public class ItemService {
 
     public void deleteById(Long id) {
         itemRepository.deleteById(id);
+    }
+
+    private ItemDTO convertToDTO(Item item) {
+        ItemDTO itemDTO = new ItemDTO();
+
+        itemDTO.setId(itemDTO.getId());
+        itemDTO.setName(item.getName());
+        itemDTO.setDescription(item.getDescription());
+        itemDTO.setQuantity(item.getQuantity());
+        itemDTO.setBoxId(item.getBox() != null ? item.getBox().getId() : null);
+
+        return itemDTO;
     }
 }

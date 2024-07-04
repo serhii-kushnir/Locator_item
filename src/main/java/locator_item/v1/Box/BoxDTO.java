@@ -3,7 +3,7 @@ package locator_item.v1.Box;
 import lombok.Data;
 
 @Data
-public class BoxDTOCreate {
+public class BoxDTO {
 
     private String name;
 

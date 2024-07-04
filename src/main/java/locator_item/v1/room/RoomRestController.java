@@ -21,19 +21,19 @@ public class RoomRestController {
 
     private final RoomService roomService;
 
+    @PostMapping("/create")
+    public ResponseEntity<Room> create(@RequestBody RoomDTO roomDTO) {
+        return mappingResponseRoom(roomService.create(roomDTO));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Room>> getAll() {
         return mappingResponseListIRooms(roomService.getAll());
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Room> create(@RequestBody RoomDTOCreate roomDTOCreate) {
-        return mappingResponseRoom(roomService.create(roomDTOCreate));
-    }
-
-    @PostMapping("/update")
+    @PostMapping("/update/{id}")
     public ResponseEntity<Room> update(@RequestBody Room room) {
-        return mappingResponseRoom(roomService.update(room));
+        return mappingResponseRoom(roomService.updateById(room));
     }
 
     @PostMapping("/delete/{id}")

@@ -39,6 +39,4 @@ public class Box {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-//    @OneToMany(mappedBy = "box")
-//    private List<Item> items;
 }

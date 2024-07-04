@@ -2,8 +2,8 @@ package locator_item.v1.room;
 
 import jakarta.transaction.Transactional;
 
-import locator_item.v1.item.Item;
-import locator_item.v1.item.ItemRepository;
+import locator_item.v1.house.House;
+import locator_item.v1.house.HouseRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -15,18 +15,19 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomService {
     private final RoomRepository roomRepository;
-    private final ItemRepository itemRepository;
+    private final HouseRepository houseRepository;
 
-    public Room create(RoomDTOCreate roomDTOCreate) {
+    public Room create(RoomDTO roomDTO) {
+        House house = houseRepository.findById(roomDTO.getHouseId())
+                .orElseThrow(() -> new RuntimeException("House not found - " + roomDTO.getHouseId()));
+
         Room room = Room.builder()
-                .name(roomDTOCreate.getName())
+                .id(roomDTO.getId())
+                .name(roomDTO.getName())
+                .house(house)
                 .build();
 
         return roomRepository.save(room);
-    }
-
-    public List<Room> getAll() {
-        return roomRepository.findAll();
     }
 
     public Room getById(Long id) {
@@ -34,18 +35,16 @@ public class RoomService {
                 new RuntimeException("Room not found - " + id));
     }
 
-    public Room update(Room room) {
+    public List<Room> getAll() {
+        return roomRepository.findAll();
+    }
+
+    public Room updateById(Room room) {
         return roomRepository.save(room);
     }
 
     @Transactional
     public void deleteById(Long id) {
-        List<Item> itemsToUpdate = itemRepository.findByRoomId(id);
-        for (Item item : itemsToUpdate) {
-            item.setRoom(null);
-            itemRepository.save(item);
-        }
-
         roomRepository.deleteById(id);
     }
 }
