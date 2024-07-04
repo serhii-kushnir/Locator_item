@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -39,11 +40,22 @@ public class RoomService {
         return roomRepository.findAll();
     }
 
-    public Room updateById(Room room) {
-        return roomRepository.save(room);
+    public Room updateById(long id, RoomDTO roomDTO) {
+        Optional<Room> roomOptional = roomRepository.findById(id);
+
+        if (roomOptional.isPresent()) {
+            Room room = roomOptional.get();
+            room.setName(roomDTO.getName());
+
+            Optional<House> houseOptional = houseRepository.findById(roomDTO.getHouseId());
+            houseOptional.ifPresent(room::setHouse);
+
+            return roomRepository.save(room);
+        }
+
+        return null;
     }
 
-    @Transactional
     public void deleteById(Long id) {
         roomRepository.deleteById(id);
     }

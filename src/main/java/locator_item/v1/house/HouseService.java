@@ -22,8 +22,9 @@ public class HouseService {
         return houseRepository.save(house);
     }
 
-    public Optional<House> getById(Long id) {
-        return houseRepository.findById(id);
+    public Optional<HouseDTO> getById(Long id) {
+        Optional<House> houseOptional = houseRepository.findById(id);
+        return houseOptional.map(this::convertToDTO);
     }
 
     public List<House> getAll() {
@@ -34,7 +35,6 @@ public class HouseService {
         Optional<House> houseOptional = houseRepository.findById(id);
 
         if (houseOptional.isPresent()) {
-
             House house = houseOptional.get();
             house.setName(houseDTO.getName());
             house.setAddress(houseDTO.getAddress());
@@ -47,6 +47,16 @@ public class HouseService {
 
     public void deleteById(Long id) {
         House house = houseRepository.findById(id).orElseThrow(() -> new RuntimeException("House not found - " + id));
+
         houseRepository.delete(house);
+    }
+
+    private HouseDTO convertToDTO(House house) {
+        HouseDTO houseDTO = new HouseDTO();
+        houseDTO.setId(house.getId());
+        houseDTO.setName(house.getName());
+        houseDTO.setAddress(house.getAddress());
+
+        return houseDTO;
     }
 }

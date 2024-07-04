@@ -22,11 +22,11 @@ public class ItemRestController {
 
     @PostMapping("/create")
     public ResponseEntity<Item> create(@RequestBody ItemDTO itemDTO) {
-        return mappingResponseItem(itemService.create(itemDTO));
+        return new ResponseEntity<>(itemService.create(itemDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
+    public ResponseEntity<ItemDTO> getById(@PathVariable Long id) {
         ItemDTO itemDTO = itemService.getById(id);
         return ResponseEntity.ok(itemDTO);
     }
@@ -54,9 +54,9 @@ public class ItemRestController {
         return mappingResponseListItems(itemService.getByRoomId(id));
     }
 
-    @GetMapping("/room/box/{id}")
+    @GetMapping("/box/{id}")
     public ResponseEntity<List<Item>> getByBoxId(@PathVariable Long id) {
-        return mappingResponseListItems(itemService.getByRoomId(id));
+        return mappingResponseListItems(itemService.getByBoxId(id));
     }
 
     private ResponseEntity<Item> mappingResponseItem(Item item) {

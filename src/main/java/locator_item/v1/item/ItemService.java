@@ -20,23 +20,26 @@ public class ItemService {
     private final RoomService roomService;
     private final BoxService boxService;
 
+    public Item create(ItemDTO itemDTO) {
+        Room room = roomService.getById(itemDTO.getRoomId());
+        Box box = itemDTO.getBoxId() != null ? boxService.getById(itemDTO.getBoxId()) : null;
+
+        Item item = new Item();
+        item.setId(itemDTO.getId());
+        item.setName(itemDTO.getName());
+        item.setDescription(itemDTO.getDescription());
+        item.setQuantity(itemDTO.getQuantity());
+        item.setRoom(room);
+        item.setBox(box);
+
+        return itemRepository.save(item);
+    }
+
     public ItemDTO getById(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Item not found - " + id));
+
         return convertToDTO(item);
-    }
-
-    public Item create(ItemDTO itemDTO) {
-        Item item = Item.builder()
-                .id(itemDTO.getId())
-                .name(itemDTO.getName())
-                .description(itemDTO.getDescription())
-                .quantity(itemDTO.getQuantity())
-                .room(roomService.getById(itemDTO.getRoomId()))
-                .box(boxService.getById(itemDTO.getBoxId()))
-                .build();
-
-        return itemRepository.save(item);
     }
 
     public List<Item> getByRoomId(Long id) {
@@ -57,7 +60,7 @@ public class ItemService {
     public Item updateById(Long id, ItemDTO itemDTO) {
         Item item = itemRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Item not found - " + id));
-        item.setId(itemDTO.getId());
+
         item.setName(itemDTO.getName());
         item.setDescription(itemDTO.getDescription());
         item.setQuantity(itemDTO.getQuantity());
@@ -65,15 +68,20 @@ public class ItemService {
         if (itemDTO.getBoxId() != null) {
             Box box = boxService.getById(itemDTO.getBoxId());
             item.setBox(box);
+        } else {
+            item.setBox(null);
         }
 
         if (itemDTO.getRoomId() != null) {
             Room room = roomService.getById(itemDTO.getRoomId());
             item.setRoom(room);
+        } else {
+            item.setRoom(null);
         }
 
         return itemRepository.save(item);
     }
+
 
     public void deleteById(Long id) {
         itemRepository.deleteById(id);
@@ -82,11 +90,12 @@ public class ItemService {
     private ItemDTO convertToDTO(Item item) {
         ItemDTO itemDTO = new ItemDTO();
 
-        itemDTO.setId(itemDTO.getId());
+        itemDTO.setId(item.getId());
         itemDTO.setName(item.getName());
         itemDTO.setDescription(item.getDescription());
         itemDTO.setQuantity(item.getQuantity());
         itemDTO.setBoxId(item.getBox() != null ? item.getBox().getId() : null);
+        itemDTO.setRoomId(item.getRoom() != null ? item.getRoom().getId() : null);
 
         return itemDTO;
     }

@@ -26,20 +26,25 @@ public class RoomRestController {
         return mappingResponseRoom(roomService.create(roomDTO));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Room> getById(@PathVariable Long id) {
+        return mappingResponseRoom(roomService.getById(id));
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Room>> getAll() {
         return mappingResponseListIRooms(roomService.getAll());
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<Room> update(@RequestBody Room room) {
-        return mappingResponseRoom(roomService.updateById(room));
+    public ResponseEntity<Room> updateById(@PathVariable Long id, @RequestBody RoomDTO roomDTO) {
+        return new ResponseEntity<>(roomService.updateById(id, roomDTO), HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public HttpStatus deleteById(@PathVariable Long id) {
         roomService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return HttpStatus.OK;
     }
 
     private ResponseEntity<Room> mappingResponseRoom(Room room) {
