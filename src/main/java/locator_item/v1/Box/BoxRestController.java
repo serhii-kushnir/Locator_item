@@ -18,28 +18,28 @@ public class BoxRestController {
     private final BoxService boxService;
 
     @PostMapping("/create")
-    public ResponseEntity<Box> create(@RequestBody BoxDTO boxDTO) {
-        return new ResponseEntity<>(boxService.create(boxDTO), HttpStatus.CREATED);
+    public ResponseEntity<Box> createBox(@RequestBody BoxDTO boxDTO) {
+        return new ResponseEntity<>(boxService.createBox(boxDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public List<Box> getById(@PathVariable Long id) {
-        return Collections.singletonList(boxService.getById(id));
+    public List<Box> getBoxById(@PathVariable Long id) {
+        return Collections.singletonList(boxService.getBoxById(id));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Box>> getAll() {
-        return new ResponseEntity<>(boxService.getAll(), HttpStatus.OK);
+    @GetMapping("/list")
+    public ResponseEntity<List<Box>> getListBoxes() {
+        return new ResponseEntity<>(boxService.getListBoxes(), HttpStatus.OK);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Box> updateById(@PathVariable Long id, @RequestBody BoxDTO boxDTO) {
-        return new ResponseEntity<>(boxService.updateById(id, boxDTO), HttpStatus.OK);
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<Box> editBoxById(@PathVariable Long id, @RequestBody BoxDTO boxDTO) {
+        return new ResponseEntity<>(boxService.editBoxById(id, boxDTO), HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
-    public HttpStatus deleteById(@PathVariable Long id) {
-        boxService.deleteById(id);
+    public HttpStatus deleteBoxById(@PathVariable Long id) {
+        boxService.deleteBoxById(id);
 
         return HttpStatus.OK;
     }

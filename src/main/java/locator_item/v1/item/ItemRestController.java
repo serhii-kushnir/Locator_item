@@ -21,49 +21,42 @@ public class ItemRestController {
     private ItemService itemService;
 
     @PostMapping("/create")
-    public ResponseEntity<Item> create(@RequestBody ItemDTO itemDTO) {
-        return new ResponseEntity<>(itemService.create(itemDTO), HttpStatus.CREATED);
+    public ResponseEntity<Item> createItem(@RequestBody ItemDTO itemDTO) {
+        return new ResponseEntity<>(itemService.createItem(itemDTO), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDTO> getById(@PathVariable Long id) {
-        ItemDTO itemDTO = itemService.getById(id);
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
+        ItemDTO itemDTO = itemService.getItemById(id);
         return ResponseEntity.ok(itemDTO);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<ItemDTO>> getAllItems() {
-        List<ItemDTO> items = itemService.getAll();
+    @GetMapping("/list")
+    public ResponseEntity<List<ItemDTO>> getListItems() {
+        List<ItemDTO> items = itemService.getListItems();
         return ResponseEntity.ok(items);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Item> updateById(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
-        Item itemUpdate = itemService.updateById(id, itemDTO);
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<Item> editItemById(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
+        Item itemUpdate = itemService.editItemById(id, itemDTO);
         return new ResponseEntity<>(itemUpdate, HttpStatus.OK);
     }
 
     @PostMapping("delete/{id}")
-    public HttpStatus deleteById(@PathVariable Long id) {
-        itemService.deleteById(id);
+    public HttpStatus deleteItemById(@PathVariable Long id) {
+        itemService.deleteItemById(id);
         return HttpStatus.OK;
     }
 
     @GetMapping("/room/{id}")
-    public ResponseEntity<List<Item>> getByRoomId(@PathVariable Long id) {
-        return mappingResponseListItems(itemService.getByRoomId(id));
+    public ResponseEntity<List<Item>> getItemsByRoomId(@PathVariable Long id) {
+        return  new ResponseEntity<>(itemService.getItemsByRoomId(id), HttpStatus.OK);
     }
 
     @GetMapping("/box/{id}")
-    public ResponseEntity<List<Item>> getByBoxId(@PathVariable Long id) {
-        return mappingResponseListItems(itemService.getByBoxId(id));
+    public ResponseEntity<List<Item>> getItemsByBoxId(@PathVariable Long id) {
+        return  new ResponseEntity<>(itemService.getItemsByBoxId(id), HttpStatus.OK);
     }
 
-    private ResponseEntity<Item> mappingResponseItem(Item item) {
-        return new ResponseEntity<>(item, HttpStatus.OK);
-    }
-
-    private ResponseEntity<List<Item>> mappingResponseListItems(List<Item> items) {
-        return new ResponseEntity<>(items, HttpStatus.OK);
-    }
 }

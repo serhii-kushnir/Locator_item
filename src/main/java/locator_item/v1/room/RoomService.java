@@ -16,7 +16,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final HouseRepository houseRepository;
 
-    public Room create(RoomDTO roomDTO) {
+    public Room createRoom(RoomDTO roomDTO) {
         House house = houseRepository.findById(roomDTO.getHouseId())
                 .orElseThrow(() -> new RuntimeException("House not found - " + roomDTO.getHouseId()));
 
@@ -29,16 +29,16 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
-    public Room getById(Long id) {
+    public Room getRoomById(Long id) {
         return roomRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Room not found - " + id));
     }
 
-    public List<Room> getAll() {
+    public List<Room> getListRooms() {
         return roomRepository.findAll();
     }
 
-    public Room updateById(long id, RoomDTO roomDTO) {
+    public Room editRoomById(long id, RoomDTO roomDTO) {
         Optional<Room> roomOptional = roomRepository.findById(id);
 
         if (roomOptional.isPresent()) {
@@ -54,7 +54,7 @@ public class RoomService {
         return null;
     }
 
-    public void deleteById(Long id) {
+    public void deleteRoomById(Long id) {
         roomRepository.deleteById(id);
     }
 }

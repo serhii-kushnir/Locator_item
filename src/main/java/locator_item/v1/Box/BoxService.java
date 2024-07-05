@@ -18,26 +18,26 @@ public class BoxService {
     private final RoomService roomService;
     private final RoomRepository roomRepository;
 
-    public Box create(BoxDTO boxDTO) {
+    public Box createBox(BoxDTO boxDTO) {
         Box box = Box.builder()
                 .id(boxDTO.getId())
                 .name(boxDTO.getName())
-                .room(roomService.getById(boxDTO.getRoomId()))
+                .room(roomService.getRoomById(boxDTO.getRoomId()))
                 .build();
 
         return boxRepository.save(box);
     }
 
-    public Box getById(Long id) {
+    public Box getBoxById(Long id) {
         return boxRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Box not found - " + id));
     }
 
-    public List<Box> getAll() {
+    public List<Box> getListBoxes() {
         return boxRepository.findAll();
     }
 
-    public Box updateById(Long id, BoxDTO boxDTO) {
+    public Box editBoxById(Long id, BoxDTO boxDTO) {
         Optional<Box> boxOptional = boxRepository.findById(id);
 
         if (boxOptional.isPresent()) {
@@ -55,7 +55,7 @@ public class BoxService {
         throw new RuntimeException("Box not found - " + id);
     }
 
-    public void deleteById(Long id) {
+    public void deleteBoxById(Long id) {
         boxRepository.deleteById(id);
     }
 }
