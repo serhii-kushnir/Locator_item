@@ -1,7 +1,5 @@
 package locator_item.v1.room;
 
-import jakarta.transaction.Transactional;
-
 import locator_item.v1.house.House;
 import locator_item.v1.house.HouseRepository;
 
