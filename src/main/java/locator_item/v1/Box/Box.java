@@ -5,7 +5,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GenerationType;
 
@@ -34,5 +33,4 @@ public class Box {
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
-
 }

@@ -1,15 +1,15 @@
 package locator_item.v1.house;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class HouseService {
 
-    @Autowired
     private HouseRepository houseRepository;
 
     public House create(HouseDTO houseDTO) {
