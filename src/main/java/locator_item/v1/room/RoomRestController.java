@@ -22,36 +22,28 @@ public class RoomRestController {
     private final RoomService roomService;
 
     @PostMapping("/create")
-    public ResponseEntity<Room> create(@RequestBody RoomDTO roomDTO) {
-        return mappingResponseRoom(roomService.create(roomDTO));
+    public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
+        return new ResponseEntity<>(roomService.createRoom(roomDTO), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getById(@PathVariable Long id) {
-        return mappingResponseRoom(roomService.getById(id));
+    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
+        return new ResponseEntity<>(roomService.getRoomById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Room>> getAll() {
-        return mappingResponseListIRooms(roomService.getAll());
+    @GetMapping("/list")
+    public ResponseEntity<List<Room>> getListRooms() {
+        return new ResponseEntity<>(roomService.getListRooms(), HttpStatus.OK);
     }
 
-    @PostMapping("/update/{id}")
-    public ResponseEntity<Room> updateById(@PathVariable Long id, @RequestBody RoomDTO roomDTO) {
-        return new ResponseEntity<>(roomService.updateById(id, roomDTO), HttpStatus.OK);
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<Room> editRoomById(@PathVariable Long id, @RequestBody RoomDTO roomDTO) {
+        return new ResponseEntity<>(roomService.editRoomById(id, roomDTO), HttpStatus.OK);
     }
 
     @PostMapping("/delete/{id}")
-    public HttpStatus deleteById(@PathVariable Long id) {
-        roomService.deleteById(id);
+    public HttpStatus deleteRoomById(@PathVariable Long id) {
+        roomService.deleteRoomById(id);
         return HttpStatus.OK;
-    }
-
-    private ResponseEntity<Room> mappingResponseRoom(Room room) {
-        return new ResponseEntity<>(room, HttpStatus.OK);
-    }
-
-    private ResponseEntity<List<Room>> mappingResponseListIRooms(List<Room> rooms) {
-        return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
 }

@@ -1,4 +1,4 @@
-package locator_item.v1.Box;
+package locator_item.v1.box;
 
 import lombok.Data;
 

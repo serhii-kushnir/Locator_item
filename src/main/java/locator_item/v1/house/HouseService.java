@@ -1,6 +1,7 @@
 package locator_item.v1.house;
 
 import lombok.AllArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public class HouseService {
 
     private HouseRepository houseRepository;
 
-    public House create(HouseDTO houseDTO) {
+    public House createHouse(HouseDTO houseDTO) {
         House house = House.builder()
                 .id(houseDTO.getId())
                 .name(houseDTO.getName())
@@ -22,16 +23,16 @@ public class HouseService {
         return houseRepository.save(house);
     }
 
-    public Optional<HouseDTO> getById(Long id) {
+    public Optional<HouseDTO> getHouseById(Long id) {
         Optional<House> houseOptional = houseRepository.findById(id);
-        return houseOptional.map(this::convertToDTO);
+        return houseOptional.map(this::convertHouseToHouseDTO);
     }
 
-    public List<House> getAll() {
+    public List<House> getListHouses() {
         return houseRepository.findAll();
     }
 
-    public House updateById(Long id, HouseDTO houseDTO) {
+    public House editHouseById(Long id, HouseDTO houseDTO) {
         Optional<House> houseOptional = houseRepository.findById(id);
 
         if (houseOptional.isPresent()) {
@@ -45,13 +46,14 @@ public class HouseService {
         return null;
     }
 
-    public void deleteById(Long id) {
-        House house = houseRepository.findById(id).orElseThrow(() -> new RuntimeException("House not found - " + id));
+    public void deleteHouseById(Long id) {
+        House house = houseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("House not found - " + id));
 
         houseRepository.delete(house);
     }
 
-    private HouseDTO convertToDTO(House house) {
+    private HouseDTO convertHouseToHouseDTO(House house) {
         HouseDTO houseDTO = new HouseDTO();
         houseDTO.setId(house.getId());
         houseDTO.setName(house.getName());

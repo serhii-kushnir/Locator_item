@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 
-import locator_item.v1.Box.Box;
+import locator_item.v1.box.Box;
 import locator_item.v1.room.Room;
 
 import lombok.AllArgsConstructor;
