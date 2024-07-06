@@ -1,7 +1,7 @@
 package locator_item.v1.item;
 
-import locator_item.v1.Box.Box;
-import locator_item.v1.Box.BoxService;
+import locator_item.v1.box.Box;
+import locator_item.v1.box.BoxService;
 import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomService;
 

@@ -1,4 +1,4 @@
-package locator_item.v1.Box;
+package locator_item.v1.box;
 
 import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomRepository;
