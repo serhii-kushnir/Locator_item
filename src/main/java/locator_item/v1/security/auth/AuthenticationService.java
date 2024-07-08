@@ -1,22 +1,29 @@
-package locator_item.v1.security.service;
+package locator_item.v1.security.auth;
+
+import locator_item.v1.security.jwt.JwtService;
+import locator_item.v1.user.UserService;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import locator_item.v1.security.domain.dto.JwtAuthenticationResponse;
-import locator_item.v1.security.domain.dto.SignInRequest;
-import locator_item.v1.security.domain.dto.SignUpRequest;
-import locator_item.v1.security.domain.model.Role;
-import locator_item.v1.security.domain.model.User;
+
+import locator_item.v1.security.jwt.JwtAuthenticationResponse;
+import locator_item.v1.user.Role;
+import locator_item.v1.user.User;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+
     private final UserService userService;
+
     private final JwtService jwtService;
+
     private final PasswordEncoder passwordEncoder;
+
     private final AuthenticationManager authenticationManager;
 
     /**
@@ -25,7 +32,7 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponse signUp(SignUpRequest request) {
+    public JwtAuthenticationResponse register(AuthRegisterRequest request) {
 
         var user = User.builder()
                 .username(request.getUsername())
@@ -46,7 +53,7 @@ public class AuthenticationService {
      * @param request данные пользователя
      * @return токен
      */
-    public JwtAuthenticationResponse signIn(SignInRequest request) {
+    public JwtAuthenticationResponse login(AuthLoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()

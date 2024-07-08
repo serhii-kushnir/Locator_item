@@ -1,6 +1,9 @@
-package locator_item.v1.security.config;
+package locator_item.v1.security;
+
+import locator_item.v1.security.jwt.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import locator_item.v1.security.service.UserService;
+
+import locator_item.v1.user.UserService;
 
 import java.util.List;
 
@@ -27,7 +31,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     private final UserService userService;
 
     @Bean

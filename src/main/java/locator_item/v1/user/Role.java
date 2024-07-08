@@ -1,4 +1,4 @@
-package locator_item.v1.security.domain.model;
+package locator_item.v1.user;
 
 public enum Role {
     ROLE_USER,

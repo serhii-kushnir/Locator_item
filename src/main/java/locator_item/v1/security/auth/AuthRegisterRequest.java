@@ -1,9 +1,11 @@
-package locator_item.v1.security.domain.dto;
+package locator_item.v1.security.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Запрос на регистрацию")
-public class SignUpRequest {
+public class AuthRegisterRequest {
 
     @Schema(description = "Имя пользователя", example = "Jon")
     @Size(min = 5, max = 50, message = "Имя пользователя должно содержать от 5 до 50 символов")

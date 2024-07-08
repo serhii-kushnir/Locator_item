@@ -1,13 +1,12 @@
-package locator_item.v1.security.service;
+package locator_item.v1.user;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
-import locator_item.v1.security.domain.model.Role;
-import locator_item.v1.security.domain.model.User;
-import locator_item.v1.security.repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class UserService {
      */
     public User create(User user) {
         if (repository.existsByUsername(user.getUsername())) {
-            // Заменить на свои исключения
+
             throw new RuntimeException("Пользователь с таким именем уже существует");
         }
 
@@ -70,21 +69,8 @@ public class UserService {
      * @return текущий пользователь
      */
     public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
         return getByUsername(username);
     }
 
-
-    /**
-     * Выдача прав администратора текущему пользователю
-     * <p>
-     * Нужен для демонстрации
-     */
-    @Deprecated
-    public void getAdmin() {
-        var user = getCurrentUser();
-        user.setRole(Role.ROLE_ADMIN);
-        save(user);
-    }
 }
