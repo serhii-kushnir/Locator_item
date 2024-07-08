@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 
-import locator_item.v1.box.Box;
+import locator_item.v1.Cell.Cell;
 import locator_item.v1.room.Room;
 
 import lombok.AllArgsConstructor;
@@ -31,18 +31,17 @@ public class Item {
     @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", length = 254)
     private String description;
 
     @Column(name = "quantity")
     private Short quantity;
 
     @ManyToOne
-    @JoinColumn(name = "box_id")
-    private Box box;
+    @JoinColumn(name = "cell_id")
+    private Cell cell;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 }
-

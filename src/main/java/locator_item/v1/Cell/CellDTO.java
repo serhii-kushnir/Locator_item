@@ -1,9 +1,9 @@
-package locator_item.v1.box;
+package locator_item.v1.Cell;
 
 import lombok.Data;
 
 @Data
-public class BoxDTO {
+public class CellDTO {
 
     private Long id;
 

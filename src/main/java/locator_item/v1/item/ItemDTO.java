@@ -13,7 +13,7 @@ public class ItemDTO {
 
     private Short quantity;
 
-    private Long boxId;
+    private Long cellId;
 
     private Long roomId;
 }

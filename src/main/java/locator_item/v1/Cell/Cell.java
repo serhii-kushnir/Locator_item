@@ -1,4 +1,4 @@
-package locator_item.v1.box;
+package locator_item.v1.Cell;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Box {
+public class Cell {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,8 @@
 package locator_item.v1.item;
 
-import locator_item.v1.box.Box;
-import locator_item.v1.box.BoxService;
+
+import locator_item.v1.Cell.Cell;
+import locator_item.v1.Cell.CellService;
 import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomService;
 
@@ -18,11 +19,11 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final RoomService roomService;
-    private final BoxService boxService;
+    private final CellService cellService;
 
     public Item createItem(ItemDTO itemDTO) {
         Room room = roomService.getRoomById(itemDTO.getRoomId());
-        Box box = itemDTO.getBoxId() != null ? boxService.getBoxById(itemDTO.getBoxId()) : null;
+        Cell cell = itemDTO.getCellId() != null ? cellService.getCellById(itemDTO.getCellId()) : null;
 
         Item item = new Item();
         item.setId(itemDTO.getId());
@@ -30,7 +31,7 @@ public class ItemService {
         item.setDescription(itemDTO.getDescription());
         item.setQuantity(itemDTO.getQuantity());
         item.setRoom(room);
-        item.setBox(box);
+        item.setCell(cell);
 
         return itemRepository.save(item);
     }
@@ -43,10 +44,10 @@ public class ItemService {
     }
 
     public List<Item> getItemsByRoomId(Long id) {
-        return itemRepository.findByBoxId(id);
+        return itemRepository.findByCellId(id);
     }
 
-    public List<Item> getItemsByBoxId(Long id) {
+    public List<Item> getItemsByCellId(Long id) {
         return itemRepository.findByRoomId(id);
     }
 
@@ -65,11 +66,11 @@ public class ItemService {
         item.setDescription(itemDTO.getDescription());
         item.setQuantity(itemDTO.getQuantity());
 
-        if (itemDTO.getBoxId() != null) {
-            Box box = boxService.getBoxById(itemDTO.getBoxId());
-            item.setBox(box);
+        if (itemDTO.getCellId() != null) {
+            Cell cell = cellService.getCellById(itemDTO.getCellId());
+            item.setCell(cell);
         } else {
-            item.setBox(null);
+            item.setCell(null);
         }
 
         if (itemDTO.getRoomId() != null) {
@@ -94,7 +95,7 @@ public class ItemService {
         itemDTO.setName(item.getName());
         itemDTO.setDescription(item.getDescription());
         itemDTO.setQuantity(item.getQuantity());
-        itemDTO.setBoxId(item.getBox() != null ? item.getBox().getId() : null);
+        itemDTO.setCellId(item.getCell() != null ? item.getCell().getId() : null);
         itemDTO.setRoomId(item.getRoom() != null ? item.getRoom().getId() : null);
 
         return itemDTO;

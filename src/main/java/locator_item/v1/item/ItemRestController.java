@@ -54,9 +54,9 @@ public class ItemRestController {
         return  new ResponseEntity<>(itemService.getItemsByRoomId(id), HttpStatus.OK);
     }
 
-    @GetMapping("/box/{id}")
-    public ResponseEntity<List<Item>> getItemsByBoxId(@PathVariable Long id) {
-        return  new ResponseEntity<>(itemService.getItemsByBoxId(id), HttpStatus.OK);
+    @GetMapping("/cell/{id}")
+    public ResponseEntity<List<Item>> getItemsByCellId(@PathVariable Long id) {
+        return  new ResponseEntity<>(itemService.getItemsByCellId(id), HttpStatus.OK);
     }
 
 }
