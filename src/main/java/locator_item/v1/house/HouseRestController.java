@@ -1,110 +1,91 @@
 package locator_item.v1.house;
 
-import locator_item.v1.user.User;
-import locator_item.v1.user.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import locator_item.v1.user.User;
+import locator_item.v1.user.UserService;
+
+import lombok.AllArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/house")
-public class HouseRestController {
+@AllArgsConstructor
+@Tag(name = "House")
+public final class HouseRestController {
 
-    @Autowired
-    private HouseService houseService;
+    private final HouseService houseService;
+    private final UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-
+    @Operation(summary = "Create House")
     @PostMapping("/create")
-    public ResponseEntity<HouseDTO> createHouse(@RequestBody HouseDTO houseDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public ResponseEntity<HouseDTO> createHouse(@RequestBody final HouseDTO houseDTO) {
+        User user = userService.getCurrentUser();
 
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if (optionalUser.isPresent()) {
-            User existingUser = optionalUser.get();
-
-            House house = new House();
-            house.setName(houseDTO.getName());
-            house.setAddress(houseDTO.getAddress());
-            house.setUser(existingUser);
-
-            HouseDTO createdHouseDTO = houseService.createHouse(houseDTO, existingUser);
-            return ResponseEntity.ok(createdHouseDTO);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return Optional.ofNullable(user)
+                .map(users -> {
+                    HouseDTO createdHouseDTO = houseService.createHouse(houseDTO, users);
+                    return ResponseEntity.ok(createdHouseDTO);
+                })
+                .orElse(ResponseEntity.badRequest().build());
     }
 
+    @Operation(summary = "Get House by id")
     @GetMapping("/{id}")
-    public ResponseEntity<HouseDTO> getHouseById(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<HouseDTO> getHouseById(@PathVariable final Long id) {
+        User user = userService.getCurrentUser();
 
         return houseService.getHouseByIdAndUser(id, user)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Get Houses by User")
     @GetMapping("/list")
     public List<HouseDTO> getHousesByUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        User user = userService.getCurrentUser();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        List<House> houses = houseService.getHousesByUser(user);
-
-        return houses.stream()
-                .map(house -> {
-                    HouseDTO houseDTO = new HouseDTO();
-                    houseDTO.setId(house.getId());
-                    houseDTO.setName(house.getName());
-                    houseDTO.setAddress(house.getAddress());
-                    houseDTO.setUser(house.getUser());
-
-                    return houseDTO;
-                })
-                .collect(Collectors.toList());
+        return houseService.getHousesByUser(user).stream()
+                .map(houseService::convertHouseToHouseDTO)
+                .toList();
     }
 
-
+    @Operation(summary = "Edit House by id")
     @PostMapping("/edit/{id}")
-    public ResponseEntity<HouseDTO> editHouseById(@PathVariable Long id, @RequestBody HouseDTO houseDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ResponseEntity<HouseDTO> editHouseById(@PathVariable final Long id, @RequestBody final HouseDTO houseDTO) {
+        User user = userService.getCurrentUser();
 
         try {
             HouseDTO updatedHouseDTO = houseService.editHouseById(id, houseDTO, user);
+
             return ResponseEntity.ok(updatedHouseDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
 
+    @Operation(summary = "Delete House by id")
     @PostMapping("/delete/{id}")
-    public HttpStatus deleteHouseById(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public ResponseEntity<Void> deleteHouseById(@PathVariable Long id) {
+        User user = userService.getCurrentUser();
 
-        houseService.deleteHouseById(id, username);
-        return HttpStatus.OK;
+        try {
+            houseService.deleteHouseById(id, user.getUsername());
+            return ResponseEntity.ok().build();
+        } catch (HouseException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }

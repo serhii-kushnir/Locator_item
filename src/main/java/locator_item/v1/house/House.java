@@ -1,11 +1,13 @@
 package locator_item.v1.house;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 
 import locator_item.v1.user.User;
@@ -20,10 +22,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class House {
+@Table(name = "houses")
+public final class House {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "house_id_seq")
+    @SequenceGenerator(name = "house_id_seq", sequenceName = "house_id_seq", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

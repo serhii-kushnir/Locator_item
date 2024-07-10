@@ -1,7 +1,9 @@
 package locator_item.v1.house;
 
 import locator_item.v1.user.User;
-import locator_item.v1.user.UserRepository;
+import locator_item.v1.user.UserDTO;
+
+import locator_item.v1.user.UserService;
 
 import lombok.AllArgsConstructor;
 
@@ -12,12 +14,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class HouseService {
+public final class HouseService {
 
-    private HouseRepository houseRepository;
-    private UserRepository userRepository;
+    private final HouseRepository houseRepository;
+    private final UserService userService;
 
-    public HouseDTO createHouse(HouseDTO houseDTO, User user) {
+    public HouseDTO createHouse(final HouseDTO houseDTO, final User user) {
         House house = House.builder()
                 .name(houseDTO.getName())
                 .address(houseDTO.getAddress())
@@ -29,57 +31,51 @@ public class HouseService {
         return convertHouseToHouseDTO(savedHouse);
     }
 
-
-    public Optional<HouseDTO> getHouseByIdAndUser(Long id, User user) {
+    public Optional<HouseDTO> getHouseByIdAndUser(final Long id, final User user) {
         Optional<House> houseOptional = houseRepository.findByIdAndUser(id, user);
+
         return houseOptional.map(this::convertHouseToHouseDTO);
     }
 
-    public List<House> getListHouses() {
-        return houseRepository.findAll();
-    }
+    public HouseDTO editHouseById(final Long id, final HouseDTO houseDTO, final User user) {
+        House house = houseRepository.findById(id)
+                .orElseThrow(() -> new HouseException("House not found - " + id));
 
-    public HouseDTO editHouseById(Long id, HouseDTO houseDTO, User user) {
-        Optional<House> houseOptional = houseRepository.findById(id);
-
-        if (houseOptional.isPresent()) {
-            House house = houseOptional.get();
-
-            if (!house.getUser().getId().equals(user.getId())) {
-                throw new RuntimeException("You do not have permission to edit this house");
-            }
-
-            house.setName(houseDTO.getName());
-            house.setAddress(houseDTO.getAddress());
-
-            House updatedHouse = houseRepository.save(house);
-            return convertHouseToHouseDTO(updatedHouse);
+        if (!house.getUser().getId().equals(user.getId())) {
+            throw new HouseException("You do not have permission to edit this house");
         }
 
-        return null;
+        house.setName(houseDTO.getName());
+        house.setAddress(houseDTO.getAddress());
+
+        House updatedHouse = houseRepository.save(house);
+
+        return convertHouseToHouseDTO(updatedHouse);
     }
 
-    public void deleteHouseById(Long id, String username) {
+    public void deleteHouseById(final Long id, final String username) {
         House house = houseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("House not found - " + id));
+                .orElseThrow(() -> new HouseException("House not found - " + id));
 
         if (!house.getUser().getUsername().equals(username)) {
-            throw new RuntimeException("You are not authorized to delete this house");
+            throw new HouseException("You are not authorized to delete this house");
         }
 
         houseRepository.delete(house);
     }
 
-    public List<House> getHousesByUser(User user) {
+    public List<House> getHousesByUser(final User user) {
         return houseRepository.findByUser(user);
     }
 
-    private HouseDTO convertHouseToHouseDTO(House house) {
+    public HouseDTO convertHouseToHouseDTO(final House house) {
         HouseDTO houseDTO = new HouseDTO();
         houseDTO.setId(house.getId());
         houseDTO.setName(house.getName());
         houseDTO.setAddress(house.getAddress());
-        houseDTO.setUser(house.getUser());
+
+        UserDTO userDTO = userService.convertUserToUserDTO(house.getUser());
+        houseDTO.setUser(userDTO);
 
         return houseDTO;
     }
