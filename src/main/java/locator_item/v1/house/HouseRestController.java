@@ -60,9 +60,10 @@ public class HouseRestController {
     }
 
     @GetMapping("/list")
-    public List<HouseDTO> getListHouses() {
+    public List<HouseDTO> getHousesByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
+
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -73,7 +74,8 @@ public class HouseRestController {
                     houseDTO.setId(house.getId());
                     houseDTO.setName(house.getName());
                     houseDTO.setAddress(house.getAddress());
-                    // Set other properties as needed
+                    houseDTO.setUser(house.getUser());
+
                     return houseDTO;
                 })
                 .collect(Collectors.toList());

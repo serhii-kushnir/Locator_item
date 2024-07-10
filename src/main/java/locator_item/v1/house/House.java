@@ -34,7 +34,7 @@ public class House {
     @Column(name = "address", length = 100)
     private String address;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

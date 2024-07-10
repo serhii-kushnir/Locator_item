@@ -29,7 +29,6 @@ public class HouseService {
         return convertHouseToHouseDTO(savedHouse);
     }
 
-    // Інші методи сервісного класу залишаються без змін
 
     public Optional<HouseDTO> getHouseById(Long id) {
         Optional<House> houseOptional = houseRepository.findById(id);
