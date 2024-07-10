@@ -1,5 +1,8 @@
 package locator_item.v1.house;
 
+import locator_item.v1.user.User;
+import locator_item.v1.user.UserRepository;
+
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -12,16 +15,21 @@ import java.util.Optional;
 public class HouseService {
 
     private HouseRepository houseRepository;
+    private UserRepository userRepository;
 
-    public House createHouse(HouseDTO houseDTO) {
+    public HouseDTO createHouse(HouseDTO houseDTO, User user) {
         House house = House.builder()
-                .id(houseDTO.getId())
                 .name(houseDTO.getName())
                 .address(houseDTO.getAddress())
+                .user(user)
                 .build();
 
-        return houseRepository.save(house);
+        House savedHouse = houseRepository.save(house);
+
+        return convertHouseToHouseDTO(savedHouse);
     }
+
+    // Інші методи сервісного класу залишаються без змін
 
     public Optional<HouseDTO> getHouseById(Long id) {
         Optional<House> houseOptional = houseRepository.findById(id);
@@ -39,6 +47,7 @@ public class HouseService {
             House house = houseOptional.get();
             house.setName(houseDTO.getName());
             house.setAddress(houseDTO.getAddress());
+            house.setUser(houseDTO.getUser()); // Встановлення користувача
 
             return houseRepository.save(house);
         }
@@ -53,11 +62,16 @@ public class HouseService {
         houseRepository.delete(house);
     }
 
+    public List<House> getHousesByUser(User user) {
+        return houseRepository.findByUser(user);
+    }
+
     private HouseDTO convertHouseToHouseDTO(House house) {
         HouseDTO houseDTO = new HouseDTO();
         houseDTO.setId(house.getId());
         houseDTO.setName(house.getName());
         houseDTO.setAddress(house.getAddress());
+        houseDTO.setUser(house.getUser());
 
         return houseDTO;
     }
