@@ -1,5 +1,7 @@
 package locator_item.v1.house;
 
+import locator_item.v1.user.User;
+
 import lombok.Data;
 
 @Data
@@ -10,4 +12,6 @@ public class HouseDTO {
     private String name;
 
     private String address;
+
+    private User user;
 }
