@@ -1,19 +1,14 @@
 package locator_item.v1.house;
 
+import locator_item.v1.user.User;
+import locator_item.v1.user.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import locator_item.v1.user.User;
-import locator_item.v1.user.UserRepository;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -89,13 +84,27 @@ public class HouseRestController {
 
 
     @PostMapping("/edit/{id}")
-    public ResponseEntity<House> editHouseById(@PathVariable Long id, @RequestBody HouseDTO houseDTO) {
-        return ResponseEntity.ok(houseService.editHouseById(id, houseDTO));
+    public ResponseEntity<HouseDTO> editHouseById(@PathVariable Long id, @RequestBody HouseDTO houseDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        try {
+            HouseDTO updatedHouseDTO = houseService.editHouseById(id, houseDTO, user);
+            return ResponseEntity.ok(updatedHouseDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
     }
 
     @PostMapping("/delete/{id}")
     public HttpStatus deleteHouseById(@PathVariable Long id) {
-        houseService.deleteHouseById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        houseService.deleteHouseById(id, username);
         return HttpStatus.OK;
     }
 }

@@ -39,24 +39,33 @@ public class HouseService {
         return houseRepository.findAll();
     }
 
-    public House editHouseById(Long id, HouseDTO houseDTO) {
+    public HouseDTO editHouseById(Long id, HouseDTO houseDTO, User user) {
         Optional<House> houseOptional = houseRepository.findById(id);
 
         if (houseOptional.isPresent()) {
             House house = houseOptional.get();
+
+            if (!house.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("You do not have permission to edit this house");
+            }
+
             house.setName(houseDTO.getName());
             house.setAddress(houseDTO.getAddress());
-            house.setUser(houseDTO.getUser()); // Встановлення користувача
 
-            return houseRepository.save(house);
+            House updatedHouse = houseRepository.save(house);
+            return convertHouseToHouseDTO(updatedHouse);
         }
 
         return null;
     }
 
-    public void deleteHouseById(Long id) {
+    public void deleteHouseById(Long id, String username) {
         House house = houseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("House not found - " + id));
+
+        if (!house.getUser().getUsername().equals(username)) {
+            throw new RuntimeException("You are not authorized to delete this house");
+        }
 
         houseRepository.delete(house);
     }
