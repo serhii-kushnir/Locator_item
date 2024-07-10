@@ -30,8 +30,8 @@ public class HouseService {
     }
 
 
-    public Optional<HouseDTO> getHouseById(Long id) {
-        Optional<House> houseOptional = houseRepository.findById(id);
+    public Optional<HouseDTO> getHouseByIdAndUser(Long id, User user) {
+        Optional<House> houseOptional = houseRepository.findByIdAndUser(id, user);
         return houseOptional.map(this::convertHouseToHouseDTO);
     }
 

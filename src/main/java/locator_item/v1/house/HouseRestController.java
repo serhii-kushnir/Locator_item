@@ -54,7 +54,12 @@ public class HouseRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<HouseDTO> getHouseById(@PathVariable Long id) {
-        return houseService.getHouseById(id)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return houseService.getHouseByIdAndUser(id, user)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -68,6 +73,7 @@ public class HouseRestController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<House> houses = houseService.getHousesByUser(user);
+
         return houses.stream()
                 .map(house -> {
                     HouseDTO houseDTO = new HouseDTO();
