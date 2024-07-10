@@ -2,6 +2,7 @@ package locator_item.v1.user;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,32 +15,30 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    private static final String USER_NOT_FOUND = "User not found";
+
     /**
      * Сохранение пользователя
-     *
-     * @return сохраненный пользователь
      */
-    public User save(User user) {
-        return userRepository.save(user);
+    public void save(User user) {
+        userRepository.save(user);
     }
 
 
     /**
      * Создание пользователя
-     *
-     * @return созданный пользователь
      */
-    public User create(User user) {
+    public void create(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
 
-            throw new RuntimeException("Пользователь с таким именем уже существует");
+            throw new UserException("Пользователь с таким именем уже существует");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Пользователь с таким email уже существует");
+            throw new UserException("Пользователь с таким email уже существует");
         }
 
-        return save(user);
+        save(user);
     }
 
     /**
@@ -64,14 +63,21 @@ public class UserService {
         return this::getByUsername;
     }
 
-    /**
-     * Получение текущего пользователя
-     *
-     * @return текущий пользователь
-     */
-    public User getCurrentUser() {
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
+
+    public UserDTO convertUserToUserDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+
+        return userDTO;
     }
 
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    }
 }

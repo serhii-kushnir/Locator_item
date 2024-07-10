@@ -19,19 +19,10 @@ import locator_item.v1.user.User;
 public class AuthenticationService {
 
     private final UserService userService;
-
     private final JwtService jwtService;
-
     private final PasswordEncoder passwordEncoder;
-
     private final AuthenticationManager authenticationManager;
 
-    /**
-     * Регистрация пользователя
-     *
-     * @param request данные пользователя
-     * @return токен
-     */
     public JwtAuthenticationResponse register(AuthRegisterRequest request) {
 
         var user = User.builder()
@@ -47,12 +38,6 @@ public class AuthenticationService {
         return new JwtAuthenticationResponse(jwt);
     }
 
-    /**
-     * Аутентификация пользователя
-     *
-     * @param request данные пользователя
-     * @return токен
-     */
     public JwtAuthenticationResponse login(AuthLoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
