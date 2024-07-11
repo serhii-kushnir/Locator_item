@@ -1,5 +1,11 @@
 package locator_item.v1.room;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import locator_item.v1.user.User;
+import locator_item.v1.user.UserService;
+
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -11,39 +17,62 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/room")
 @AllArgsConstructor
-public class RoomRestController {
+@Tag(name = "Room")
+public final class RoomRestController {
 
     private final RoomService roomService;
+    private final UserService userService;
 
+    @Operation(summary = "Create Room")
     @PostMapping("/create")
-    public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
-        return new ResponseEntity<>(roomService.createRoom(roomDTO), HttpStatus.OK);
+    public ResponseEntity<RoomDTO> createRoom(@RequestBody final RoomDTO roomDTO) {
+        User user = userService.getCurrentUser();
+
+        return ResponseEntity.ok(roomService.createRoom(roomDTO, user));
     }
 
+    @Operation(summary = "Get Room by id")
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
-        return new ResponseEntity<>(roomService.getRoomById(id), HttpStatus.OK);
+    public ResponseEntity<RoomDTO> getRoomById(@PathVariable final Long id) {
+        User user = userService.getCurrentUser();
+
+        return ResponseEntity.ok(roomService.getRoomById(id, user));
     }
 
+    @Operation(summary = "Get Rooms by House")
     @GetMapping("/list")
-    public ResponseEntity<List<Room>> getListRooms() {
-        return new ResponseEntity<>(roomService.getListRooms(), HttpStatus.OK);
+    public List<RoomDTO> getRoomsByHouse() {
+        return roomService.getRoomsByHouse();
     }
 
+    @Operation(summary = "Edit Room by id")
     @PostMapping("/edit/{id}")
-    public ResponseEntity<Room> editRoomById(@PathVariable Long id, @RequestBody RoomDTO roomDTO) {
-        return new ResponseEntity<>(roomService.editRoomById(id, roomDTO), HttpStatus.OK);
+    public ResponseEntity<RoomDTO> editRoomById(@PathVariable final Long id, @RequestBody final RoomDTO roomDTO) {
+        User user = userService.getCurrentUser();
+
+        try {
+            RoomDTO updatedRoomDTO = roomService.editRoomById(id, roomDTO, user);
+            return ResponseEntity.ok(updatedRoomDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
     }
 
+    @Operation(summary = "Delete Room by id")
     @PostMapping("/delete/{id}")
-    public HttpStatus deleteRoomById(@PathVariable Long id) {
-        roomService.deleteRoomById(id);
-        return HttpStatus.OK;
+    public ResponseEntity<Void> deleteRoomById(@PathVariable Long id) {
+        User user = userService.getCurrentUser();
+
+        try {
+            roomService.deleteRoomById(id, user);
+            return ResponseEntity.ok().build();
+        } catch (RoomException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }

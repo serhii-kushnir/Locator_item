@@ -4,6 +4,8 @@ import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomRepository;
 import locator_item.v1.room.RoomService;
 
+import locator_item.v1.user.User;
+import locator_item.v1.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,15 @@ public class CellService {
     private final CellRepository cellRepository;
     private final RoomService roomService;
     private final RoomRepository roomRepository;
+    private final UserService userService;
 
     public Cell createCell(CellDTO cellDTO) {
+        User user = userService.getCurrentUser();
+
         Cell cell = Cell.builder()
                 .id(cellDTO.getId())
                 .name(cellDTO.getName())
-                .room(roomService.getRoomById(cellDTO.getRoomId()))
+                .room(roomService.getRoomById(cellDTO.getRoomId(), user)
                 .build();
 
         return cellRepository.save(cell);
