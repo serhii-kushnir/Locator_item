@@ -32,10 +32,12 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
 
+    private static final String NAME_SEQUENCE = "user_id_seq";
+
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
-    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = NAME_SEQUENCE)
+    @SequenceGenerator(name = NAME_SEQUENCE, sequenceName = NAME_SEQUENCE, allocationSize = 1)
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)

@@ -25,9 +25,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "houses")
 public final class House {
 
+    private static final String NAME_SEQUENCE = "house_id_seq";
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "house_id_seq")
-    @SequenceGenerator(name = "house_id_seq", sequenceName = "house_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = NAME_SEQUENCE)
+    @SequenceGenerator(name = NAME_SEQUENCE, sequenceName = NAME_SEQUENCE, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

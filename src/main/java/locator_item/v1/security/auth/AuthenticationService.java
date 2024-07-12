@@ -23,7 +23,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public JwtAuthenticationResponse register(AuthRegisterRequest request) {
+    public JwtAuthenticationResponse register(final AuthRegisterRequest request) {
 
         var user = User.builder()
                 .username(request.getUsername())
@@ -38,7 +38,7 @@ public class AuthenticationService {
         return new JwtAuthenticationResponse(jwt);
     }
 
-    public JwtAuthenticationResponse login(AuthLoginRequest request) {
+    public JwtAuthenticationResponse login(final AuthLoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getUsername(),
                 request.getPassword()

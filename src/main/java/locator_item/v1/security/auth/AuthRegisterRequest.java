@@ -13,21 +13,21 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Запрос на регистрацию")
+@Schema(description = "Registration Request")
 public class AuthRegisterRequest {
 
-    @Schema(description = "Имя пользователя", example = "Jon")
-    @Size(min = 3, max = 50, message = "Имя пользователя должно содержать от 5 до 50 символов")
-    @NotBlank(message = "Имя пользователя не может быть пустыми")
+    @Schema(description = "Username", example = "Serhii")
+    @Size(min = 3, max = 50, message = "Username must contain from 3 to 50 characters")
+    @NotBlank(message = "Username cannot be empty")
     private String username;
 
-    @Schema(description = "Адрес электронной почты", example = "jondoe@gmail.com")
-    @Size(min = 3, max = 255, message = "Адрес электронной почты должен содержать от 5 до 255 символов")
-    @NotBlank(message = "Адрес электронной почты не может быть пустыми")
-    @Email(message = "Email адрес должен быть в формате user@example.com")
+    @Schema(description = "E-mail address", example = "serhii@gmail.com")
+    @Size(min = 3, max = 255, message = "The email address must contain between 3 and 255 characters")
+    @NotBlank(message = "Email address cannot be empty")
+    @Email(message = "Email address must be in the format user@example.com")
     private String email;
 
-    @Schema(description = "Пароль", example = "my_1secret1_password")
-    @Size(min = 4, max = 255, message = "Длина пароля должна быть не более 255 символов")
+    @Schema(description = "Password", example = "my_1secret1_password")
+    @Size(min = 4, max = 255, message = "Password length must be at least 4 characters and no more than 255 characters")
     private String password;
 }

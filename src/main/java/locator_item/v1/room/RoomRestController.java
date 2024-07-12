@@ -31,17 +31,13 @@ public final class RoomRestController {
     @Operation(summary = "Create Room")
     @PostMapping("/create")
     public ResponseEntity<RoomDTO> createRoom(@RequestBody final RoomDTO roomDTO) {
-        User user = userService.getCurrentUser();
-
-        return ResponseEntity.ok(roomService.createRoom(roomDTO, user));
+        return ResponseEntity.ok(roomService.createRoom(roomDTO));
     }
 
     @Operation(summary = "Get Room by id")
     @GetMapping("/{id}")
     public ResponseEntity<RoomDTO> getRoomById(@PathVariable final Long id) {
-        User user = userService.getCurrentUser();
-
-        return ResponseEntity.ok(roomService.getRoomById(id, user));
+        return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
     @Operation(summary = "Get Rooms by House")
@@ -53,10 +49,8 @@ public final class RoomRestController {
     @Operation(summary = "Edit Room by id")
     @PostMapping("/edit/{id}")
     public ResponseEntity<RoomDTO> editRoomById(@PathVariable final Long id, @RequestBody final RoomDTO roomDTO) {
-        User user = userService.getCurrentUser();
-
         try {
-            RoomDTO updatedRoomDTO = roomService.editRoomById(id, roomDTO, user);
+            RoomDTO updatedRoomDTO = roomService.editRoomById(id, roomDTO);
             return ResponseEntity.ok(updatedRoomDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -66,10 +60,8 @@ public final class RoomRestController {
     @Operation(summary = "Delete Room by id")
     @PostMapping("/delete/{id}")
     public ResponseEntity<Void> deleteRoomById(@PathVariable Long id) {
-        User user = userService.getCurrentUser();
-
         try {
-            roomService.deleteRoomById(id, user);
+            roomService.deleteRoomById(id);
             return ResponseEntity.ok().build();
         } catch (RoomException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
