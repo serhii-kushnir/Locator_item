@@ -18,13 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 public class RoomService {
 
-    private static final String ROOM_NOT_FOUND = "Room not found - ";
+    public static final String ROOM_NOT_FOUND = "Room not found - ";
 
     private final RoomRepository roomRepository;
     private final HouseRepository houseRepository;
     private final UserService userService;
 
-    public RoomDTO createRoom(RoomDTO roomDTO) {
+    public RoomDTO createRoom(final RoomDTO roomDTO) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findByIdAndUser(roomDTO.getHouse().getId(), user)
                 .orElseThrow(() -> new HouseException("House not found - " + roomDTO.getHouse().getId()));
@@ -39,7 +39,7 @@ public class RoomService {
         return convertRoomToRoomDTO(savedRoom);
     }
 
-    public RoomDTO getRoomById(Long id) {
+    public RoomDTO getRoomById(final Long id) {
         User user = userService.getCurrentUser();
         Room room = roomRepository.findByIdAndHouseUser(id, user)
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
@@ -62,7 +62,7 @@ public class RoomService {
         return roomDTOs;
     }
 
-    public RoomDTO editRoomById(Long id, RoomDTO roomDTO) {
+    public RoomDTO editRoomById(final Long id, final RoomDTO roomDTO) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findById(roomDTO.getHouse().getId())
                 .orElseThrow(() -> new HouseException("House not found - " + roomDTO.getHouse().getId()));
@@ -77,7 +77,7 @@ public class RoomService {
         return convertRoomToRoomDTO(updatedRoom);
     }
 
-    public void deleteRoomById(Long id) {
+    public void deleteRoomById(final Long id) {
         User user = userService.getCurrentUser();
         Room room = roomRepository.findByIdAndHouseUser(id, user)
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
@@ -85,7 +85,7 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
-    public RoomDTO convertRoomToRoomDTO(Room room) {
+    public RoomDTO convertRoomToRoomDTO(final Room room) {
         RoomDTO roomDTO = new RoomDTO();
         roomDTO.setId(room.getId());
         roomDTO.setName(room.getName());

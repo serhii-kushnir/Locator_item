@@ -13,7 +13,5 @@ public interface HouseRepository extends JpaRepository<House, Long> {
 
     List<House> findByUser(User user);
 
-    House findHouseByUser(User user);
-
     Optional<House> findByIdAndUser(Long id, User user);
 }

@@ -3,7 +3,6 @@ package locator_item.v1.room;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
 
 import lombok.AllArgsConstructor;
