@@ -13,6 +13,4 @@ public interface CellRepository extends JpaRepository<Cell, Long> {
     List<Cell> findAllByRoomIn(final List<Room> rooms);
 
     Optional<Cell> findByIdAndRoomHouseUser(final Long id, final User user);
-
-    Optional<Cell> findByIdAndRoom_House_User(Long id, User user);
 }

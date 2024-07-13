@@ -6,9 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 
 import locator_item.v1.user.UserDTO;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public final class HouseDTO {
 
     @Schema(description = "ID House", example = "1")
