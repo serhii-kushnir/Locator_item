@@ -19,7 +19,8 @@ public final class HouseService {
     private final HouseRepository houseRepository;
     private final UserService userService;
 
-    public HouseDTO createHouse(final HouseDTO houseDTO, final User user) {
+    public HouseDTO createHouse(final HouseDTO houseDTO) {
+        User user = userService.getCurrentUser();
         House house = House.builder()
                 .name(houseDTO.getName())
                 .address(houseDTO.getAddress())
@@ -31,13 +32,15 @@ public final class HouseService {
         return convertHouseToHouseDTO(savedHouse);
     }
 
-    public Optional<HouseDTO> getHouseByIdAndUser(final Long id, final User user) {
+    public Optional<HouseDTO> getHouseByIdAndUser(final Long id) {
+        User user = userService.getCurrentUser();
         Optional<House> houseOptional = houseRepository.findByIdAndUser(id, user);
 
         return houseOptional.map(this::convertHouseToHouseDTO);
     }
 
-    public HouseDTO editHouseById(final Long id, final HouseDTO houseDTO, final User user) {
+    public HouseDTO editHouseById(final Long id, final HouseDTO houseDTO) {
+        User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
                 .orElseThrow(() -> new HouseException("House not found - " + id));
 
@@ -53,18 +56,21 @@ public final class HouseService {
         return convertHouseToHouseDTO(updatedHouse);
     }
 
-    public void deleteHouseById(final Long id, final String username) {
+    public void deleteHouseById(final Long id) {
+        User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
                 .orElseThrow(() -> new HouseException("House not found - " + id));
 
-        if (!house.getUser().getUsername().equals(username)) {
+        if (!house.getUser().getUsername().equals(user.getUsername())) {
             throw new HouseException("You are not authorized to delete this house");
         }
 
         houseRepository.delete(house);
     }
 
-    public List<House> getHousesByUser(final User user) {
+    public List<House> getHousesByUser() {
+        User user = userService.getCurrentUser();
+
         return houseRepository.findByUser(user);
     }
 

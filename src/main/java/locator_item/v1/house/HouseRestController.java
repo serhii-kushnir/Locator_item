@@ -32,22 +32,13 @@ public final class HouseRestController {
     @Operation(summary = "Create House")
     @PostMapping("/create")
     public ResponseEntity<HouseDTO> createHouse(@RequestBody final HouseDTO houseDTO) {
-        User user = userService.getCurrentUser();
-
-        return Optional.ofNullable(user)
-                .map(users -> {
-                    HouseDTO createdHouseDTO = houseService.createHouse(houseDTO, users);
-                    return ResponseEntity.ok(createdHouseDTO);
-                })
-                .orElse(ResponseEntity.badRequest().build());
+        return new ResponseEntity<>(houseService.createHouse(houseDTO), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get House by id")
     @GetMapping("/{id}")
     public ResponseEntity<HouseDTO> getHouseById(@PathVariable final Long id) {
-        User user = userService.getCurrentUser();
-
-        return houseService.getHouseByIdAndUser(id, user)
+        return houseService.getHouseByIdAndUser(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -55,9 +46,7 @@ public final class HouseRestController {
     @Operation(summary = "Get Houses by User")
     @GetMapping("/list")
     public List<HouseDTO> getHousesByUser() {
-        User user = userService.getCurrentUser();
-
-        return houseService.getHousesByUser(user).stream()
+        return houseService.getHousesByUser().stream()
                 .map(houseService::convertHouseToHouseDTO)
                 .toList();
     }
@@ -65,27 +54,24 @@ public final class HouseRestController {
     @Operation(summary = "Edit House by id")
     @PostMapping("/edit/{id}")
     public ResponseEntity<HouseDTO> editHouseById(@PathVariable final Long id, @RequestBody final HouseDTO houseDTO) {
-        User user = userService.getCurrentUser();
-
         try {
-            HouseDTO updatedHouseDTO = houseService.editHouseById(id, houseDTO, user);
+            HouseDTO updatedHouseDTO = houseService.editHouseById(id, houseDTO);
 
             return ResponseEntity.ok(updatedHouseDTO);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @Operation(summary = "Delete House by id")
     @PostMapping("/delete/{id}")
     public ResponseEntity<Void> deleteHouseById(@PathVariable Long id) {
-        User user = userService.getCurrentUser();
-
         try {
-            houseService.deleteHouseById(id, user.getUsername());
+            houseService.deleteHouseById(id);
+
             return ResponseEntity.ok().build();
         } catch (HouseException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }

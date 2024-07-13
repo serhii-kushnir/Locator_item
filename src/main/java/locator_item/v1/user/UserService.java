@@ -17,54 +17,30 @@ public class UserService {
 
     private static final String USER_NOT_FOUND = "User not found";
 
-    /**
-     * Сохранение пользователя
-     */
-    public void save(User user) {
-        userRepository.save(user);
-    }
-
-
-    /**
-     * Создание пользователя
-     */
-    public void create(User user) {
+    public void create(final User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
 
-            throw new UserException("Пользователь с таким именем уже существует");
+            throw new UserException("A user with the same name already exists");
         }
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new UserException("Пользователь с таким email уже существует");
+            throw new UserException("A user with this email already exists");
         }
 
-        save(user);
+        userRepository.save(user);
     }
 
-    /**
-     * Получение пользователя по имени пользователя
-     *
-     * @return пользователь
-     */
-    public User getByUsername(String username) {
+    public User getByUsername(final String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     }
 
-    /**
-     * Получение пользователя по имени пользователя
-     * <p>
-     * Нужен для Spring Security
-     *
-     * @return пользователь
-     */
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
     }
 
-
-    public UserDTO convertUserToUserDTO(User user) {
+    public UserDTO convertUserToUserDTO(final User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());

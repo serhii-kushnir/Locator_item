@@ -30,7 +30,7 @@ public class JwtService {
      * @param token токен
      * @return имя пользователя
      */
-    public String extractUserName(String token) {
+    public String extractUserName(final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -40,7 +40,7 @@ public class JwtService {
      * @param userDetails данные пользователя
      * @return токен
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(final UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User customUserDetails) {
             claims.put("id", customUserDetails.getId());
@@ -57,7 +57,7 @@ public class JwtService {
      * @param userDetails данные пользователя
      * @return true, если токен валиден
      */
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(final String token, final UserDetails userDetails) {
         final String userName = extractUserName(token);
         return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
@@ -70,7 +70,7 @@ public class JwtService {
      * @param <T>             тип данных
      * @return данные
      */
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
+    private <T> T extractClaim(final String token, final Function<Claims, T> claimsResolvers) {
         final Claims claims = extractAllClaims(token);
         return claimsResolvers.apply(claims);
     }
@@ -82,10 +82,10 @@ public class JwtService {
      * @param userDetails данные пользователя
      * @return токен
      */
-    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    private String generateToken(final Map<String, Object> extraClaims, final UserDetails userDetails) {
         return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -95,7 +95,7 @@ public class JwtService {
      * @param token токен
      * @return true, если токен просрочен
      */
-    private boolean isTokenExpired(String token) {
+    private boolean isTokenExpired(final String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -105,7 +105,7 @@ public class JwtService {
      * @param token токен
      * @return дата истечения
      */
-    private Date extractExpiration(String token) {
+    private Date extractExpiration(final String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
@@ -115,7 +115,7 @@ public class JwtService {
      * @param token токен
      * @return данные
      */
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(final String token) {
         return Jwts.parser().setSigningKey(getSigningKey()).build().parseClaimsJws(token)
                 .getBody();
     }

@@ -1,4 +1,4 @@
-package locator_item.v1.Cell;
+package locator_item.v1.cell;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,9 +25,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "cells")
 public class Cell {
 
+    private static final String NAME_SEQUENCE = "cell_id_seq";
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cell_id_seq")
-    @SequenceGenerator(name = "cell_id_seq", sequenceName = "cell_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = NAME_SEQUENCE)
+    @SequenceGenerator(name = NAME_SEQUENCE, sequenceName = NAME_SEQUENCE, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
