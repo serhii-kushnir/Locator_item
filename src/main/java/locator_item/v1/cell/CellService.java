@@ -4,7 +4,6 @@ import locator_item.v1.room.RoomService;
 import locator_item.v1.room.RoomRepository;
 import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomException;
-import locator_item.v1.room.RoomDTO;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
@@ -29,22 +28,18 @@ public class CellService {
     private final CellRepository cellRepository;
 
     public CellDTO createCell(final CellDTO cellDTO) {
-        Room room = roomRepository.findByIdAndHouseUser(cellDTO.getRoom().getId(), getCurrentUser())
-                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + cellDTO.getRoom().getId()));
+        Room room = getRoomByIdAndHouseUser(cellDTO);
 
         Cell cell = Cell.builder()
                 .name(cellDTO.getName())
                 .room(room)
                 .build();
 
-        Cell saveCell = cellRepository.save(cell);
-
-        return convertCellToCellDTO(saveCell);
+        return convertCellToCellDTO(cellRepository.save(cell));
     }
 
     public CellDTO getCellById(final Long id) {
-        Cell cell = cellRepository.findByIdAndRoomHouseUser(id, getCurrentUser())
-                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
+        Cell cell = getCellByIdAndRoomHouseUser(id);
 
         return convertCellToCellDTO(cell);
     }
@@ -58,38 +53,41 @@ public class CellService {
                 .toList();
     }
 
-    public CellDTO editCellById(Long id, CellDTO cellDTO) {
-        RoomDTO roomDTO = cellDTO.getRoom();
-        Room room = roomRepository.findById(roomDTO.getId())
-                    .orElseThrow(() -> new RoomException("Room not found - " + roomDTO.getId()));
+    public CellDTO editCellById(final Long id, final CellDTO cellDTO) {
+        Room room = getRoomByIdAndHouseUser(cellDTO);
 
-        Cell cell = cellRepository.findByIdAndRoom_House_User(id, getCurrentUser())
-                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
+        Cell cell = getCellByIdAndRoomHouseUser(id);
         cell.setName(cellDTO.getName());
         cell.setRoom(room);
 
-        Cell updatedCell = cellRepository.save(cell);
+        return convertCellToCellDTO(cellRepository.save(cell));
+    }
 
-        return convertCellToCellDTO(updatedCell);
+    public void deleteCellById(final Long id) {
+        Cell cell = getCellByIdAndRoomHouseUser(id);
+
+        cellRepository.delete(cell);
     }
 
     public CellDTO convertCellToCellDTO(final Cell cell) {
-        CellDTO cellDTO = new CellDTO();
-        cellDTO.setId(cell.getId());
-        cellDTO.setName(cell.getName());
-        cellDTO.setRoom(roomService.convertRoomToRoomDTO(cell.getRoom()));
+        return CellDTO.builder()
+                .id(cell.getId())
+                .name(cell.getName())
+                .room(roomService.convertRoomToRoomDTO(cell.getRoom()))
+                .build();
+    }
 
-        return cellDTO;
+    private Room getRoomByIdAndHouseUser(final CellDTO cellDTO) {
+        return roomRepository.findByIdAndHouseUser(cellDTO.getRoom().getId(), getCurrentUser())
+                .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + cellDTO.getRoom().getId()));
+    }
+
+    private Cell getCellByIdAndRoomHouseUser(final Long id) {
+        return cellRepository.findByIdAndRoomHouseUser(id, getCurrentUser())
+                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
     }
 
     private User getCurrentUser() {
         return userService.getCurrentUser();
-    }
-
-    public void  deleteCellById(final Long id) {
-        Cell cell = cellRepository.findByIdAndRoom_House_User(id, getCurrentUser())
-                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
-
-        cellRepository.delete(cell);
     }
 }
