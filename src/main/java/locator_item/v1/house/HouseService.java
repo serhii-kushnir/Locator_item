@@ -16,6 +16,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public final class HouseService {
 
+    public static final String HOUSE_NOT_FOUND = "House not found - ";
+
     private final HouseRepository houseRepository;
     private final UserService userService;
 
@@ -42,7 +44,7 @@ public final class HouseService {
     public HouseDTO editHouseById(final Long id, final HouseDTO houseDTO) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
-                .orElseThrow(() -> new HouseException("House not found - " + id));
+                .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + id));
 
         if (!house.getUser().getId().equals(user.getId())) {
             throw new HouseException("You do not have permission to edit this house");
@@ -59,7 +61,7 @@ public final class HouseService {
     public void deleteHouseById(final Long id) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
-                .orElseThrow(() -> new HouseException("House not found - " + id));
+                .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + id));
 
         if (!house.getUser().getUsername().equals(user.getUsername())) {
             throw new HouseException("You are not authorized to delete this house");

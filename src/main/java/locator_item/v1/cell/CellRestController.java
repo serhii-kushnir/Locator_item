@@ -10,11 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @RequestMapping("/api/v1/cell")
 @AllArgsConstructor
-@Tag(name = "Room")
+@Tag(name = "Cell")
 public final class CellRestController {
 
     private final CellService cellService;
@@ -23,5 +25,11 @@ public final class CellRestController {
     @PostMapping("/create")
     public ResponseEntity<CellDTO> createCell(@RequestBody final CellDTO cellDTO) {
         return ResponseEntity.ok(cellService.createCell(cellDTO));
+    }
+
+    @Operation(summary = "Get Cell by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<CellDTO> getCellById(@PathVariable final Long id) {
+        return ResponseEntity.ok(cellService.getCellById(id));
     }
 }

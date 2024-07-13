@@ -1,6 +1,5 @@
 package locator_item.v1.cell;
 
-import locator_item.v1.house.HouseRepository;
 import locator_item.v1.room.RoomService;
 import locator_item.v1.room.RoomRepository;
 import locator_item.v1.room.Room;
@@ -19,15 +18,14 @@ import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
 @AllArgsConstructor
 public class CellService {
 
-    private static final String CEll_NOT_FOUND = "Cell not found - ";
+    private static final String CELL_NOT_FOUND = "Cell not found - ";
 
     private final UserService userService;
-    private final HouseRepository houseRepository;
     private final RoomService roomService;
     private final RoomRepository roomRepository;
     private final CellRepository cellRepository;
 
-    public CellDTO createCell(CellDTO cellDTO) {
+    public CellDTO createCell(final CellDTO cellDTO) {
         User user = userService.getCurrentUser();
 
         Room room = roomRepository.findByIdAndHouseUser(cellDTO.getRoom().getId(), user)
@@ -41,6 +39,14 @@ public class CellService {
         Cell saveCell = cellRepository.save(cell);
 
         return convertCellToCellDTO(saveCell);
+    }
+
+    public CellDTO getCellById(final Long id) {
+        User user = userService.getCurrentUser();
+        Cell cell = cellRepository.findByIdAndRoomHouseUser(id, user)
+                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
+
+        return convertCellToCellDTO(cell);
     }
 
     public CellDTO convertCellToCellDTO(final Cell cell) {

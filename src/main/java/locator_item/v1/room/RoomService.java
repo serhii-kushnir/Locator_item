@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static locator_item.v1.house.HouseService.HOUSE_NOT_FOUND;
+
 @Service
 @AllArgsConstructor
 public class RoomService {
@@ -27,7 +29,7 @@ public class RoomService {
     public RoomDTO createRoom(final RoomDTO roomDTO) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findByIdAndUser(roomDTO.getHouse().getId(), user)
-                .orElseThrow(() -> new HouseException("House not found - " + roomDTO.getHouse().getId()));
+                .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + roomDTO.getHouse().getId()));
 
         Room room = Room.builder()
                 .name(roomDTO.getName())
@@ -65,7 +67,7 @@ public class RoomService {
     public RoomDTO editRoomById(final Long id, final RoomDTO roomDTO) {
         User user = userService.getCurrentUser();
         House house = houseRepository.findById(roomDTO.getHouse().getId())
-                .orElseThrow(() -> new HouseException("House not found - " + roomDTO.getHouse().getId()));
+                .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + roomDTO.getHouse().getId()));
 
         Room room = roomRepository.findByIdAndHouseUser(id, user)
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
