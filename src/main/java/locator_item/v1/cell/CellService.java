@@ -1,6 +1,9 @@
 package locator_item.v1.cell;
 
-import locator_item.v1.room.*;
+import locator_item.v1.room.RoomService;
+import locator_item.v1.room.RoomRepository;
+import locator_item.v1.room.Room;
+import locator_item.v1.room.RoomException;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;

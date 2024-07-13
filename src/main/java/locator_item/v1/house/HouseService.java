@@ -22,11 +22,10 @@ public final class HouseService {
     private final UserService userService;
 
     public HouseDTO createHouse(final HouseDTO houseDTO) {
-        User user = userService.getCurrentUser();
         House house = House.builder()
                 .name(houseDTO.getName())
                 .address(houseDTO.getAddress())
-                .user(user)
+                .user(getCurrentUser())
                 .build();
 
         House savedHouse = houseRepository.save(house);
@@ -35,18 +34,16 @@ public final class HouseService {
     }
 
     public Optional<HouseDTO> getHouseByIdAndUser(final Long id) {
-        User user = userService.getCurrentUser();
-        Optional<House> houseOptional = houseRepository.findByIdAndUser(id, user);
+        Optional<House> houseOptional = houseRepository.findByIdAndUser(id, getCurrentUser());
 
         return houseOptional.map(this::convertHouseToHouseDTO);
     }
 
     public HouseDTO editHouseById(final Long id, final HouseDTO houseDTO) {
-        User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
                 .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + id));
 
-        if (!house.getUser().getId().equals(user.getId())) {
+        if (!house.getUser().getId().equals(getCurrentUser().getId())) {
             throw new HouseException("You do not have permission to edit this house");
         }
 
@@ -58,22 +55,19 @@ public final class HouseService {
         return convertHouseToHouseDTO(updatedHouse);
     }
 
+    public List<House> getHousesByUser() {
+        return houseRepository.findByUser(getCurrentUser());
+    }
+
     public void deleteHouseById(final Long id) {
-        User user = userService.getCurrentUser();
         House house = houseRepository.findById(id)
                 .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + id));
 
-        if (!house.getUser().getUsername().equals(user.getUsername())) {
+        if (!house.getUser().getUsername().equals(getCurrentUser().getUsername())) {
             throw new HouseException("You are not authorized to delete this house");
         }
 
         houseRepository.delete(house);
-    }
-
-    public List<House> getHousesByUser() {
-        User user = userService.getCurrentUser();
-
-        return houseRepository.findByUser(user);
     }
 
     public HouseDTO convertHouseToHouseDTO(final House house) {
@@ -86,5 +80,9 @@ public final class HouseService {
         houseDTO.setUser(userDTO);
 
         return houseDTO;
+    }
+
+    private User getCurrentUser() {
+        return userService.getCurrentUser();
     }
 }

@@ -27,8 +27,7 @@ public class RoomService {
     private final UserService userService;
 
     public RoomDTO createRoom(final RoomDTO roomDTO) {
-        User user = userService.getCurrentUser();
-        House house = houseRepository.findByIdAndUser(roomDTO.getHouse().getId(), user)
+        House house = houseRepository.findByIdAndUser(roomDTO.getHouse().getId(), getCurrentUser())
                 .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + roomDTO.getHouse().getId()));
 
         Room room = Room.builder()
@@ -42,16 +41,14 @@ public class RoomService {
     }
 
     public RoomDTO getRoomById(final Long id) {
-        User user = userService.getCurrentUser();
-        Room room = roomRepository.findByIdAndHouseUser(id, user)
+        Room room = roomRepository.findByIdAndHouseUser(id, getCurrentUser())
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
 
         return convertRoomToRoomDTO(room);
     }
 
     public List<RoomDTO> getRoomsByHouse() {
-        User user = userService.getCurrentUser();
-        List<House> houses = houseRepository.findByUser(user);
+        List<House> houses = houseRepository.findByUser(getCurrentUser());
 
         List<RoomDTO> roomDTOs = new ArrayList<>();
         for (House house : houses) {
@@ -65,11 +62,10 @@ public class RoomService {
     }
 
     public RoomDTO editRoomById(final Long id, final RoomDTO roomDTO) {
-        User user = userService.getCurrentUser();
         House house = houseRepository.findById(roomDTO.getHouse().getId())
                 .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + roomDTO.getHouse().getId()));
 
-        Room room = roomRepository.findByIdAndHouseUser(id, user)
+        Room room = roomRepository.findByIdAndHouseUser(id, getCurrentUser())
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
         room.setName(roomDTO.getName());
         room.setHouse(house);
@@ -80,18 +76,11 @@ public class RoomService {
     }
 
     public void deleteRoomById(final Long id) {
-        User user = userService.getCurrentUser();
-        Room room = roomRepository.findByIdAndHouseUser(id, user)
+        Room room = roomRepository.findByIdAndHouseUser(id, getCurrentUser())
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + id));
 
         roomRepository.delete(room);
     }
-
-    public Room getRoomEntityById(Long id, User user) {
-        return roomRepository.findByIdAndHouseUser(id, user)
-                .orElseThrow(() -> new RoomException("Room not found or not authorized - " + id));
-    }
-
 
     public RoomDTO convertRoomToRoomDTO(final Room room) {
         RoomDTO roomDTO = new RoomDTO();
@@ -108,5 +97,9 @@ public class RoomService {
         roomDTO.setHouse(houseDTO);
 
         return roomDTO;
+    }
+
+    private User getCurrentUser() {
+        return userService.getCurrentUser();
     }
 }
