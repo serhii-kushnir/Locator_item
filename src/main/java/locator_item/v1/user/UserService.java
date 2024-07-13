@@ -41,12 +41,11 @@ public class UserService {
     }
 
     public UserDTO convertUserToUserDTO(final User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setEmail(user.getEmail());
-
-        return userDTO;
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .build();
     }
 
     public User getCurrentUser() {
