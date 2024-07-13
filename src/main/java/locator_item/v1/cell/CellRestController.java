@@ -3,6 +3,7 @@ package locator_item.v1.cell;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import locator_item.v1.room.RoomException;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,17 @@ public final class CellRestController {
             return ResponseEntity.ok(updatedCellDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+    }
+
+    @Operation(summary = "Delete Cell by id")
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteRoomById(@PathVariable Long id) {
+        try {
+            cellService.deleteCellById(id);
+            return ResponseEntity.ok().build();
+        } catch (RoomException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 }

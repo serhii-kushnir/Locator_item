@@ -85,4 +85,11 @@ public class CellService {
     private User getCurrentUser() {
         return userService.getCurrentUser();
     }
+
+    public void  deleteCellById(final Long id) {
+        Cell cell = cellRepository.findByIdAndRoom_House_User(id, getCurrentUser())
+                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
+
+        cellRepository.delete(cell);
+    }
 }
