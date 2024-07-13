@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.AllArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,16 @@ public final class CellRestController {
     @GetMapping("/list")
     public ResponseEntity<List<CellDTO>> getCellsByRoom() {
         return ResponseEntity.ok(cellService.getCellsByRoom());
+    }
+
+    @Operation(summary = "Edit Cell by id")
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<CellDTO> editCellById(@PathVariable final Long id, @RequestBody final CellDTO cellDTO) {
+        try {
+            CellDTO updatedCellDTO = cellService.editCellById(id, cellDTO);
+            return ResponseEntity.ok(updatedCellDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
     }
 }

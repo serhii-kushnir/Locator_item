@@ -99,6 +99,17 @@ public class RoomService {
         return roomDTO;
     }
 
+    public Room convertRoomDTOToRoom(final RoomDTO roomDTO) {
+        House house = houseRepository.findById(roomDTO.getHouse().getId())
+                .orElseThrow(() -> new HouseException(HOUSE_NOT_FOUND + roomDTO.getHouse().getId()));
+
+        return Room.builder()
+                .id(roomDTO.getId())
+                .name(roomDTO.getName())
+                .house(house)
+                .build();
+    }
+
     private User getCurrentUser() {
         return userService.getCurrentUser();
     }

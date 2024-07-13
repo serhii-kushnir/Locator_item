@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
+    List<Room> findByHouseUser(User user);
+
     List<Room> findByHouse(House house);
 
     List<Room> findAllByHouseUser(User user);

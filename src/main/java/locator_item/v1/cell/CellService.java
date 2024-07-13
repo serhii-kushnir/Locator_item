@@ -4,6 +4,7 @@ import locator_item.v1.room.RoomService;
 import locator_item.v1.room.RoomRepository;
 import locator_item.v1.room.Room;
 import locator_item.v1.room.RoomException;
+import locator_item.v1.room.RoomDTO;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
@@ -55,6 +56,21 @@ public class CellService {
         return cells.stream()
                 .map(this::convertCellToCellDTO)
                 .toList();
+    }
+
+    public CellDTO editCellById(Long id, CellDTO cellDTO) {
+        RoomDTO roomDTO = cellDTO.getRoom();
+        Room room = roomRepository.findById(roomDTO.getId())
+                    .orElseThrow(() -> new RoomException("Room not found - " + roomDTO.getId()));
+
+        Cell cell = cellRepository.findByIdAndRoom_House_User(id, getCurrentUser())
+                .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
+        cell.setName(cellDTO.getName());
+        cell.setRoom(room);
+
+        Cell updatedCell = cellRepository.save(cell);
+
+        return convertCellToCellDTO(updatedCell);
     }
 
     public CellDTO convertCellToCellDTO(final Cell cell) {
