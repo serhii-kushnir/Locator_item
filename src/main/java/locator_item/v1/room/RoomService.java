@@ -87,6 +87,12 @@ public class RoomService {
         roomRepository.delete(room);
     }
 
+    public Room getRoomEntityById(Long id, User user) {
+        return roomRepository.findByIdAndHouseUser(id, user)
+                .orElseThrow(() -> new RoomException("Room not found or not authorized - " + id));
+    }
+
+
     public RoomDTO convertRoomToRoomDTO(final Room room) {
         RoomDTO roomDTO = new RoomDTO();
         roomDTO.setId(room.getId());

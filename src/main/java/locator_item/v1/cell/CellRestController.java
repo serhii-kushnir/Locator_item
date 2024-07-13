@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/cell")
 @AllArgsConstructor
@@ -31,5 +33,11 @@ public final class CellRestController {
     @GetMapping("/{id}")
     public ResponseEntity<CellDTO> getCellById(@PathVariable final Long id) {
         return ResponseEntity.ok(cellService.getCellById(id));
+    }
+
+    @Operation(summary = "Get Cells by Room")
+    @GetMapping("/list")
+    public ResponseEntity<List<CellDTO>> getCellsByRoom() {
+        return ResponseEntity.ok(cellService.getCellsByRoom());
     }
 }

@@ -14,5 +14,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     List<Room> findByHouse(House house);
 
+    List<Room> findAllByHouseUser(User user);
+
     Optional<Room> findByIdAndHouseUser(Long id, User user);
 }

@@ -1,9 +1,6 @@
 package locator_item.v1.cell;
 
-import locator_item.v1.room.RoomService;
-import locator_item.v1.room.RoomRepository;
-import locator_item.v1.room.Room;
-import locator_item.v1.room.RoomException;
+import locator_item.v1.room.*;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
@@ -11,6 +8,8 @@ import locator_item.v1.user.UserService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
 
@@ -26,9 +25,7 @@ public class CellService {
     private final CellRepository cellRepository;
 
     public CellDTO createCell(final CellDTO cellDTO) {
-        User user = userService.getCurrentUser();
-
-        Room room = roomRepository.findByIdAndHouseUser(cellDTO.getRoom().getId(), user)
+        Room room = roomRepository.findByIdAndHouseUser(cellDTO.getRoom().getId(), getCurrentUser())
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + cellDTO.getRoom().getId()));
 
         Cell cell = Cell.builder()
@@ -42,11 +39,19 @@ public class CellService {
     }
 
     public CellDTO getCellById(final Long id) {
-        User user = userService.getCurrentUser();
-        Cell cell = cellRepository.findByIdAndRoomHouseUser(id, user)
+        Cell cell = cellRepository.findByIdAndRoomHouseUser(id, getCurrentUser())
                 .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
 
         return convertCellToCellDTO(cell);
+    }
+
+    public List<CellDTO> getCellsByRoom() {
+        List<Room> rooms = roomRepository.findAllByHouseUser(getCurrentUser());
+        List<Cell> cells = cellRepository.findAllByRoomIn(rooms);
+
+        return cells.stream()
+                .map(this::convertCellToCellDTO)
+                .toList();
     }
 
     public CellDTO convertCellToCellDTO(final Cell cell) {
@@ -56,5 +61,9 @@ public class CellService {
         cellDTO.setRoom(roomService.convertRoomToRoomDTO(cell.getRoom()));
 
         return cellDTO;
+    }
+
+    private User getCurrentUser() {
+        return userService.getCurrentUser();
     }
 }
