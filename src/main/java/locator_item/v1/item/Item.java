@@ -10,25 +10,29 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.GenerationType;
 
-import locator_item.v1.Cell.Cell;
+import locator_item.v1.cell.Cell;
 import locator_item.v1.room.Room;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "items")
 public class Item {
 
+    private static final String NAME_SEQUENCE = "cell_id_seq";
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "item_id_seq")
-    @SequenceGenerator(name = "item_id_seq", sequenceName = "item_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = NAME_SEQUENCE)
+    @SequenceGenerator(name = NAME_SEQUENCE, sequenceName = NAME_SEQUENCE, allocationSize = 1)
     @Column(name = "id")
     private Long id;
 

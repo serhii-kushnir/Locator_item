@@ -12,7 +12,11 @@ import jakarta.persistence.GenerationType;
 
 import locator_item.v1.room.Room;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter

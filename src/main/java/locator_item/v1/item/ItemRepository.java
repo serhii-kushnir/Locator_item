@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    List<Item> findByRoomId(long id);
+    List<Item> findByRoomId(final long id);
 
-    List<Item> findByCellId(long id);
+    List<Item> findByCellId(final long id);
 }
