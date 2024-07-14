@@ -1,5 +1,6 @@
 package locator_item.v1.item;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/item")
 @AllArgsConstructor
@@ -20,16 +19,18 @@ public class ItemRestController {
 
     private ItemService itemService;
 
+    @Operation(summary = "Create Item")
     @PostMapping("/create")
-    public ResponseEntity<ItemDTO> createItem(@RequestBody ItemDTO itemDTO) {
+    public ResponseEntity<ItemDTO> createItem(@RequestBody final ItemDTO itemDTO) {
         return new ResponseEntity<>(itemService.createItem(itemDTO), HttpStatus.CREATED);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<ItemDTO> getItemById(@PathVariable Long id) {
-//        ItemDTO itemDTO = itemService.getItemById(id);
-//        return ResponseEntity.ok(itemDTO);
-//    }
+    @Operation(summary = "Get Item by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<ItemDTO> getItemById(@PathVariable final Long id) {
+        ItemDTO itemDTO = itemService.getItemById(id);
+        return ResponseEntity.ok(itemDTO);
+    }
 //
 //    @GetMapping("/list")
 //    public ResponseEntity<List<ItemDTO>> getListItems() {

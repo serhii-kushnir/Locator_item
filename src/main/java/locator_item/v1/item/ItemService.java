@@ -1,7 +1,14 @@
 package locator_item.v1.item;
 
-import locator_item.v1.cell.*;
-import locator_item.v1.room.*;
+import locator_item.v1.cell.CellService;
+import locator_item.v1.cell.CellRepository;
+import locator_item.v1.cell.CellException;
+import locator_item.v1.cell.Cell;
+
+import locator_item.v1.room.RoomService;
+import locator_item.v1.room.RoomRepository;
+import locator_item.v1.room.RoomException;
+import locator_item.v1.room.Room;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
@@ -16,6 +23,8 @@ import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
 @Service
 @AllArgsConstructor
 public class ItemService {
+
+    private static final String ITEM_NOT_FOUND = "Item not found - ";
 
     private final ItemRepository itemRepository;
     private final UserService userService;
@@ -40,6 +49,11 @@ public class ItemService {
         return convertItemToItemDTO(itemRepository.save(item));
     }
 
+    public ItemDTO getItemById(final Long id) {
+        Item item = getItemByIdAndCellRoomHouseUser(id);
+
+        return convertItemToItemDTO(item);
+    }
 
     public ItemDTO convertItemToItemDTO(Item item) {
         ItemDTO.ItemDTOBuilder builder = ItemDTO.builder()
@@ -64,80 +78,19 @@ public class ItemService {
 
     private Cell getCellByIdAndRoomHouseUser(final Long id) {
         if (id == null) {
-            return null; // або поверніть null, якщо id є null
+            return null;
         }
 
         return cellRepository.findByIdAndRoomHouseUser(id, getCurrentUser())
                 .orElseThrow(() -> new CellException(CELL_NOT_FOUND + id));
     }
 
+    private Item getItemByIdAndCellRoomHouseUser(final Long id) {
+        return itemRepository.findByIdAndRoomHouseUser(id, getCurrentUser())
+                .orElseThrow(() -> new ItemException(ITEM_NOT_FOUND + id));
+    }
 
     private User getCurrentUser() {
         return userService.getCurrentUser();
     }
-
-//    public ItemDTO getItemById(Long id) {
-//        Item item = itemRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Item not found - " + id));
-//
-//        return convertItemToItemDTO(item);
-//    }
-//
-//    public List<Item> getItemsByRoomId(Long id) {
-//        return itemRepository.findByCellId(id);
-//    }
-//
-//    public List<Item> getItemsByCellId(Long id) {
-//        return itemRepository.findByRoomId(id);
-//    }
-//
-//    public List<ItemDTO> getListItems() {
-//        List<Item> items = itemRepository.findAll();
-//        return items.stream()
-//                .map(this::convertItemToItemDTO)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public Item editItemById(Long id, ItemDTO itemDTO) {
-//        Item item = itemRepository.findById(id).orElseThrow(() ->
-//                new RuntimeException("Item not found - " + id));
-//
-//        item.setName(itemDTO.getName());
-//        item.setDescription(itemDTO.getDescription());
-//        item.setQuantity(itemDTO.getQuantity());
-//
-//        if (itemDTO.getCellId() != null) {
-//            Cell cell = cellService.getCellById(itemDTO.getCellId());
-//            item.setCell(cell);
-//        } else {
-//            item.setCell(null);
-//        }
-//
-//        if (itemDTO.getRoomId() != null) {
-//            Room room = roomService.getRoomById(itemDTO.getRoomId());
-//            item.setRoom(room);
-//        } else {
-//            item.setRoom(null);
-//        }
-//
-//        return itemRepository.save(item);
-//    }
-//
-//
-//    public void deleteItemById(Long id) {
-//        itemRepository.deleteById(id);
-//    }
-//
-//    private ItemDTO convertItemToItemDTO(Item item) {
-//        ItemDTO itemDTO = new ItemDTO();
-//
-//        itemDTO.setId(item.getId());
-//        itemDTO.setName(item.getName());
-//        itemDTO.setDescription(item.getDescription());
-//        itemDTO.setQuantity(item.getQuantity());
-//        itemDTO.setCellId(item.getCell() != null ? item.getCell().getId() : null);
-//        itemDTO.setRoomId(item.getRoom() != null ? item.getRoom().getId() : null);
-//
-//        return itemDTO;
-//    }
 }
