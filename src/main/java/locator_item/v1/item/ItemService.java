@@ -1,9 +1,6 @@
 package locator_item.v1.item;
 
-import locator_item.v1.cell.CellService;
-import locator_item.v1.cell.CellRepository;
-import locator_item.v1.cell.CellException;
-import locator_item.v1.cell.Cell;
+import locator_item.v1.cell.*;
 
 import locator_item.v1.room.RoomService;
 import locator_item.v1.room.RoomRepository;
@@ -16,6 +13,9 @@ import locator_item.v1.user.UserService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static locator_item.v1.cell.CellService.CELL_NOT_FOUND;
 import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
@@ -74,6 +74,19 @@ public class ItemService {
     private Room getRoomByIdAndHouseUser(final ItemDTO itemDTO) {
         return roomRepository.findByIdAndHouseUser(itemDTO.getRoom().getId(), getCurrentUser())
                 .orElseThrow(() -> new RoomException(ROOM_NOT_FOUND + itemDTO.getRoom().getId()));
+    }
+
+    public List<ItemDTO> getCellsByRoom() {
+        List<Room> rooms = roomRepository.findAllByHouseUser(getCurrentUser());
+        List<Long> roomIds = rooms.stream()
+                .map(Room::getId)
+                .toList();
+
+        List<Item> items = itemRepository.findByRoomIdIn(roomIds);
+
+        return items.stream()
+                .map(this::convertItemToItemDTO)
+                .toList();
     }
 
     private Cell getCellByIdAndRoomHouseUser(final Long id) {
