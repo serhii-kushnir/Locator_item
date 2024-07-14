@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface HouseRepository extends JpaRepository<House, Long> {
 
-    List<House> findByUser(User user);
+    List<House> findByUser(final User user);
 
-    Optional<House> findByIdAndUser(Long id, User user);
+    Optional<House> findByIdAndUser(final Long id, final User user);
 }

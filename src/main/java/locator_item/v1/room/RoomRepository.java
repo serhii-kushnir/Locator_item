@@ -12,9 +12,9 @@ import java.util.Optional;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    List<Room> findByHouse(House house);
+    List<Room> findByHouse(final House house);
 
-    List<Room> findAllByHouseUser(User user);
+    List<Room> findAllByHouseUser(final User user);
 
-    Optional<Room> findByIdAndHouseUser(Long id, User user);
+    Optional<Room> findByIdAndHouseUser(final Long id, final User user);
 }

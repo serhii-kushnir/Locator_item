@@ -25,6 +25,7 @@ public final class RoomDTO {
     @NotBlank(message = "Name cannot be empty")
     private String name;
 
-    @Schema(description = "House")
+    @Schema(description = "House", example = "Hom")
+    @NotBlank(message = "House cannot be empty")
     private HouseDTO house;
 }

@@ -20,7 +20,7 @@ import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
 @AllArgsConstructor
 public class CellService {
 
-    private static final String CELL_NOT_FOUND = "Cell not found - ";
+    public static final String CELL_NOT_FOUND = "Cell not found - ";
 
     private final UserService userService;
     private final RoomService roomService;
