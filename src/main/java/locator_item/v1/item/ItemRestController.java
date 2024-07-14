@@ -42,11 +42,11 @@ public class ItemRestController {
         return ResponseEntity.ok(items);
     }
 
-//    @PostMapping("/edit/{id}")
-//    public ResponseEntity<Item> editItemById(@PathVariable long id, @RequestBody ItemDTO itemDTO) {
-//        Item itemUpdate = itemService.editItemById(id, itemDTO);
-//        return new ResponseEntity<>(itemUpdate, HttpStatus.OK);
-//    }
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<ItemDTO> editItemById(@PathVariable Long id, @RequestBody ItemDTO itemDTO) {
+        ItemDTO updatedItem = itemService.editItemById(id, itemDTO);
+        return ResponseEntity.ok(updatedItem);
+    }
 
     @PostMapping("delete/{id}")
     public HttpStatus deleteItemById(@PathVariable Long id) {

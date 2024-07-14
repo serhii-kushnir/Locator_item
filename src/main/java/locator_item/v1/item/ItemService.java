@@ -91,6 +91,20 @@ public class ItemService {
                 .toList();
     }
 
+    public ItemDTO editItemById(final Long id, final ItemDTO itemDTO) {
+        Room room = getRoomByIdAndHouseUser(itemDTO);
+        Cell cell = getCellByIdAndRoomHouseUser(itemDTO.getCell().getId());
+
+        Item item = getItemByIdAndCellRoomHouseUser(id);
+        item.setName(itemDTO.getName());
+        item.setDescription(itemDTO.getDescription());
+        item.setQuantity(itemDTO.getQuantity());
+        item.setCell(cell);
+        item.setRoom(room);
+
+        return convertItemToItemDTO(itemRepository.save(item));
+    }
+
     public void deleteItemById(final Long id) {
         Item item = getItemByIdAndCellRoomHouseUser(id);
 
