@@ -1,6 +1,9 @@
 package locator_item.v1.item;
 
-import locator_item.v1.cell.*;
+import locator_item.v1.cell.CellService;
+import locator_item.v1.cell.CellRepository;
+import locator_item.v1.cell.CellException;
+import locator_item.v1.cell.Cell;
 
 import locator_item.v1.room.RoomService;
 import locator_item.v1.room.RoomRepository;
@@ -15,7 +18,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static locator_item.v1.cell.CellService.CELL_NOT_FOUND;
 import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
@@ -87,6 +89,12 @@ public class ItemService {
         return items.stream()
                 .map(this::convertItemToItemDTO)
                 .toList();
+    }
+
+    public void deleteItemById(final Long id) {
+        Item item = getItemByIdAndCellRoomHouseUser(id);
+
+        itemRepository.delete(item);
     }
 
     private Cell getCellByIdAndRoomHouseUser(final Long id) {

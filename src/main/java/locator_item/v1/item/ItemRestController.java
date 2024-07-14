@@ -47,21 +47,11 @@ public class ItemRestController {
 //        Item itemUpdate = itemService.editItemById(id, itemDTO);
 //        return new ResponseEntity<>(itemUpdate, HttpStatus.OK);
 //    }
-//
-//    @PostMapping("delete/{id}")
-//    public HttpStatus deleteItemById(@PathVariable Long id) {
-//        itemService.deleteItemById(id);
-//        return HttpStatus.OK;
-//    }
-//
-//    @GetMapping("/room/{id}")
-//    public ResponseEntity<List<Item>> getItemsByRoomId(@PathVariable Long id) {
-//        return  new ResponseEntity<>(itemService.getItemsByRoomId(id), HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/cell/{id}")
-//    public ResponseEntity<List<Item>> getItemsByCellId(@PathVariable Long id) {
-//        return  new ResponseEntity<>(itemService.getItemsByCellId(id), HttpStatus.OK);
-//    }
+
+    @PostMapping("delete/{id}")
+    public HttpStatus deleteItemById(@PathVariable Long id) {
+        itemService.deleteItemById(id);
+        return HttpStatus.OK;
+    }
 
 }
