@@ -1,14 +1,8 @@
 package locator_item.v1.item;
 
-import locator_item.v1.cell.CellService;
-import locator_item.v1.cell.CellRepository;
-import locator_item.v1.cell.CellException;
-import locator_item.v1.cell.Cell;
+import locator_item.v1.cell.*;
 
-import locator_item.v1.room.RoomService;
-import locator_item.v1.room.RoomRepository;
-import locator_item.v1.room.RoomException;
-import locator_item.v1.room.Room;
+import locator_item.v1.room.*;
 
 import locator_item.v1.user.User;
 import locator_item.v1.user.UserService;
@@ -18,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static locator_item.v1.cell.CellService.CELL_NOT_FOUND;
 import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
@@ -37,7 +32,9 @@ public class ItemService {
 
     public ItemDTO createItem(final ItemDTO itemDTO) {
         Room room = getRoomByIdAndHouseUser(itemDTO);
-        Cell cell = itemDTO.getCell() != null ? getCellByIdAndRoomHouseUser(itemDTO.getCell().getId()) : null;
+        Cell cell = itemDTO.getCell() != null ?
+                        getCellByIdAndRoomHouseUser(itemDTO.getCell().getId()) :
+                        null;
 
         Item item = Item.builder()
                 .id(itemDTO.getId())
@@ -58,19 +55,20 @@ public class ItemService {
     }
 
     public ItemDTO convertItemToItemDTO(Item item) {
-        ItemDTO.ItemDTOBuilder builder = ItemDTO.builder()
+        Optional<CellDTO> optionalCellDTO = cellService.convertCellToCellDTO(item.getCell());
+        CellDTO cellDTO = optionalCellDTO.orElse(null); // Перетворення Optional в CellDTO, якщо Optional пустий, то повертається null
+
+        Optional<RoomDTO> optionalRoomDTO = Optional.ofNullable(roomService.convertRoomToRoomDTO(item.getRoom()));
+        RoomDTO roomDTO = optionalRoomDTO.orElse(null); // Перетворення Optional в RoomDTO, якщо Optional пустий, то повертається null
+
+        return ItemDTO.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
-                .quantity(item.getQuantity());
-
-        if (item.getCell() != null) {
-            builder.cell(cellService.convertCellToCellDTO(item.getCell()));
-        } else {
-            builder.room(roomService.convertRoomToRoomDTO(item.getRoom()));
-        }
-
-        return builder.build();
+                .quantity(item.getQuantity())
+                .cell(cellDTO)
+                .room(roomDTO)
+                .build();
     }
 
     private Room getRoomByIdAndHouseUser(final ItemDTO itemDTO) {
