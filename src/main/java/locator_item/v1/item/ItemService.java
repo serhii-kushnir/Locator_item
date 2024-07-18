@@ -91,14 +91,21 @@ public class ItemService {
 
     public ItemDTO editItemById(final Long id, final ItemDTO itemDTO) {
         Room room = getRoomByIdAndHouseUser(itemDTO);
-        Cell cell = getCellByIdAndRoomHouseUser(itemDTO.getCell().getId());
+
+        Cell cell = null;
+        if (itemDTO.getCell() != null) {
+            cell = getCellByIdAndRoomHouseUser(itemDTO.getCell().getId());
+        }
 
         Item item = getItemByIdAndCellRoomHouseUser(id);
-        item.setName(itemDTO.getName());
-        item.setDescription(itemDTO.getDescription());
-        item.setQuantity(itemDTO.getQuantity());
-        item.setCell(cell);
-        item.setRoom(room);
+        item = Item.builder()
+                .id(item.getId())
+                .name(itemDTO.getName())
+                .description(itemDTO.getDescription())
+                .quantity(itemDTO.getQuantity())
+                .cell(cell)
+                .room(room)
+                .build();
 
         return convertItemToItemDTO(itemRepository.save(item));
     }
