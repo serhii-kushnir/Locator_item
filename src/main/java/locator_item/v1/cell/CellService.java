@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static locator_item.v1.room.RoomService.ROOM_NOT_FOUND;
 
@@ -27,7 +28,7 @@ public class CellService {
     private final RoomRepository roomRepository;
     private final CellRepository cellRepository;
 
-    public CellDTO createCell(final CellDTO cellDTO) {
+    public Optional<CellDTO> createCell(final CellDTO cellDTO) {
         Room room = getRoomByIdAndHouseUser(cellDTO);
 
         Cell cell = Cell.builder()
@@ -38,13 +39,13 @@ public class CellService {
         return convertCellToCellDTO(cellRepository.save(cell));
     }
 
-    public CellDTO getCellById(final Long id) {
+    public Optional<CellDTO> getCellById(final Long id) {
         Cell cell = getCellByIdAndRoomHouseUser(id);
 
         return convertCellToCellDTO(cell);
     }
 
-    public List<CellDTO> getCellsByRoom() {
+    public List<Optional<CellDTO>> getCellsByRoom() {
         List<Room> rooms = roomRepository.findAllByHouseUser(getCurrentUser());
         List<Cell> cells = cellRepository.findAllByRoomIn(rooms);
 
@@ -53,7 +54,7 @@ public class CellService {
                 .toList();
     }
 
-    public CellDTO editCellById(final Long id, final CellDTO cellDTO) {
+    public Optional<CellDTO> editCellById(final Long id, final CellDTO cellDTO) {
         Room room = getRoomByIdAndHouseUser(cellDTO);
 
         Cell cell = getCellByIdAndRoomHouseUser(id);
@@ -69,12 +70,16 @@ public class CellService {
         cellRepository.delete(cell);
     }
 
-    public CellDTO convertCellToCellDTO(final Cell cell) {
-        return CellDTO.builder()
+    public Optional<CellDTO> convertCellToCellDTO(final Cell cell) {
+        if (cell == null) {
+            return Optional.empty();
+        }
+
+        return Optional.ofNullable(CellDTO.builder()
                 .id(cell.getId())
                 .name(cell.getName())
                 .room(roomService.convertRoomToRoomDTO(cell.getRoom()))
-                .build();
+                .build());
     }
 
     private Room getRoomByIdAndHouseUser(final CellDTO cellDTO) {

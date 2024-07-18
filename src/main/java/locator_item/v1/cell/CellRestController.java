@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/cell")
@@ -28,27 +29,27 @@ public final class CellRestController {
 
     @Operation(summary = "Create cell")
     @PostMapping("/create")
-    public ResponseEntity<CellDTO> createCell(@RequestBody final CellDTO cellDTO) {
+    public ResponseEntity<Optional<CellDTO>> createCell(@RequestBody final CellDTO cellDTO) {
         return ResponseEntity.ok(cellService.createCell(cellDTO));
     }
 
     @Operation(summary = "Get Cell by id")
     @GetMapping("/{id}")
-    public ResponseEntity<CellDTO> getCellById(@PathVariable final Long id) {
+    public ResponseEntity<Optional<CellDTO>> getCellById(@PathVariable final Long id) {
         return ResponseEntity.ok(cellService.getCellById(id));
     }
 
     @Operation(summary = "Get Cells by Room")
     @GetMapping("/list")
-    public ResponseEntity<List<CellDTO>> getCellsByRoom() {
+    public ResponseEntity<List<Optional<CellDTO>>> getCellsByRoom() {
         return ResponseEntity.ok(cellService.getCellsByRoom());
     }
 
     @Operation(summary = "Edit Cell by id")
     @PostMapping("/edit/{id}")
-    public ResponseEntity<CellDTO> editCellById(@PathVariable final Long id, @RequestBody final CellDTO cellDTO) {
+    public ResponseEntity<Optional<CellDTO>> editCellById(@PathVariable final Long id, @RequestBody final CellDTO cellDTO) {
         try {
-            CellDTO updatedCellDTO = cellService.editCellById(id, cellDTO);
+            Optional<CellDTO> updatedCellDTO = cellService.editCellById(id, cellDTO);
             return ResponseEntity.ok(updatedCellDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
